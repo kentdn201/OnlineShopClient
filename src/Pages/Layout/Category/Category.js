@@ -8,7 +8,7 @@ const Category = ({ categories }) => {
     <Menu style={{ padding: "0 50px" }} mode="horizontal">
       {categories.map((category) => (
           <Menu.Item  key={category.id}>
-            <Link>{category.label}</Link>
+            <Link to={`danh-muc/${category.slug}`}>{category.name}</Link>
         </Menu.Item>
       ))}
     </Menu>

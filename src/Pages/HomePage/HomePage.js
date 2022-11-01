@@ -1,10 +1,9 @@
-import { Layout, Card, Col, Row, Button } from "antd";
+import { Layout, Card } from "antd";
 import { Link } from "react-router-dom";
 import React, {useState, useEffect} from "react";
-import HeaderAsset from "../Layout/Header/Header";
-import Category from "../Layout/Category/Category";
 import CarouselAsset from "../Layout/Carousel/CarouselAsset";
 import FooterAsset from "../Layout/Footer/FooterAsset";
+import ListProduct from "../../Components/ListProduct/ListProduct";
 import axios from "axios";
 const { Content } = Layout;
 
@@ -13,14 +12,13 @@ const gridStyle = {
   textAlign: "center",
 };
 
-const { Meta } = Card;
-
 function HomePage({categories}) {
-  const [productList, setProductList] = useState([])
+  const [listProduct, setListProduct] = useState([])
 
   useEffect(() => {
       axios.get("http://localhost:8080/product/all").then(response => {
-        setProductList(response.data)
+        setListProduct(response.data)
+        document.title="Online Shop"
       })
   }, [])
 
@@ -37,8 +35,8 @@ function HomePage({categories}) {
         <Card title="Danh Mục">
           {categories.map((category) => (
             <Card.Grid style={gridStyle} key={category.id}>
-              <Link>
-                <img alt="example" src={category.src} />
+              <Link to={`danh-muc/${category.slug}`}>
+                <img alt={category.name} src={category.image} />
               </Link>
             </Card.Grid>
           ))}
@@ -59,35 +57,7 @@ function HomePage({categories}) {
           </Link>
         </div>
 
-        <Row gutter={16}>
-          {productList.map((product) => (
-            <Col key={product.id} xs={24} sm={8} md={6} lg={8} xl={6}>
-              <Link to={product.slug}>
-                <Card
-                  hoverable
-                  style={{
-                    width: "auto",
-                    marginTop: 8,
-                  }}
-                  cover={<img alt="example" src={`./images/${product.image}`} />}
-                >
-                  <Meta
-                    title={product.name}
-                    description={product.price.toString() + " VNĐ"}
-                  />
-                </Card>
-                <Button
-                  style={{
-                    width: "100%",
-                    border: "none",
-                  }}
-                >
-                  Xem Thông Tin
-                </Button>
-              </Link>
-            </Col>
-          ))}
-        </Row>
+        <ListProduct productList={listProduct}/>
       </Content>
       <FooterAsset />
     </Layout>
