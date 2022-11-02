@@ -6,7 +6,7 @@ import HeaderAsset from "./Pages/Layout/Header/Header";
 import Category from "./Pages/Layout/Category/Category";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Cookies, CookiesProvider } from "react-cookie";
+import { Cookies } from "react-cookie";
 import GetProductsByCategory from "./Pages/HomePage/Category/GetProductsByCategory";
 import Login from "./Pages/HomePage/Login/Login";
 import CurrentUserContext from "./Share/Contexts/CurrentUserContext";

@@ -3,47 +3,39 @@ import { Button, Form, Input } from "antd";
 import axios from "axios";
 import React, { useState } from "react";
 import { useCookies } from "react-cookie";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Title from "../../../Components/Title/Title";
 import "../../../css/Login/Login.css";
 
 const Login = () => {
-    sessionStorage.setItem("key", 1)
-    let navigate = useNavigate();
-    const [cookies, setCookie] = useCookies(["user"])
-    const [error, setError] = useState("");
-    const [isFormValid, setFormValid] = useState(false);
-    const [didCancel, setDidCancel] = useState(false);
+  sessionStorage.setItem("key", 1);
+  const [cookies, setCookie] = useCookies(["user"]);
+  const [error, setError] = useState("");
 
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
-    const info = {
-        Email: values.email,
-        Password: values.password,
-    }
-    if(didCancel === true) return;
-    setDidCancel(x => true);
 
-    axios.post(`http://localhost:8080/user/signin`, {
-        email: values.email, password: values.password
-    }).then((response) => {
-        if(values.remember === true)
-        {
-            setCookie('token', response.data, {
-                maxAge: 7 * 24 * 60 * 60
-            });
-        } else {
-            setCookie('token', response.data)
-        }
-        window.location.replace("/")
+    axios
+      .post(`http://localhost:8080/user/signin`, {
+        email: values.email,
+        password: values.password,
+      })
+      .then((response) => {
+        setCookie("token", response.data, {
+          maxAge: 7 * 24 * 60 * 60,
+        });
+        window.location.replace("/");
         sessionStorage.setItem("key", 1);
-    })
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+        setError(error.response.data);
+      });
   };
 
   const onFinishFailed = (errorInfo) => {
-    setDidCancel(x => false);
-    console.log('Failed:', errorInfo);
-  }
+    console.log("Failed:", errorInfo);
+  };
   return (
     <Form
       name="normal_login"
@@ -79,7 +71,7 @@ const Login = () => {
             message: "Please input your Password!",
           },
         ]}
-        onChange={()=> setError("")}
+        onChange={() => setError("")}
       >
         <Input
           prefix={<LockOutlined className="site-form-item-icon" />}
@@ -89,6 +81,19 @@ const Login = () => {
       </Form.Item>
 
       <Form.Item>
+      <div>
+          {error === "Tài khoản không có trong hệ thống" ? (
+            <p style={{ color: "#CF2338" }}>
+              Tài khoản bạn nhập không tồn tại vui lòng đăng nhập bằng tài khoản khác
+            </p>
+          ) : error === "Sai tài khoản hoặc mật khẩu" ? (
+            <p style={{ color: "#CF2338" }}>
+              Sai tài khoản hoặc mật khẩu vui lòng nhập lại
+            </p>
+          ) : (
+            <></>
+          )}
+        </div>
         <Button type="primary" htmlType="submit" className="login-form-button">
           Log in
         </Button>

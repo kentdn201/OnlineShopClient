@@ -4,7 +4,7 @@ import { ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
 import CurrentUserContext from "../../../Share/Contexts/CurrentUserContext";
 
 import { Link } from "react-router-dom";
-import { Layout, Input, Dropdown, Space, Menu, Empty } from "antd";
+import { Layout, Input, Dropdown, Menu } from "antd";
 const { Header } = Layout;
 
 const linkCss = {
@@ -15,21 +15,32 @@ const linkCss = {
 };
 
 const HeaderAsset = () => {
-  const {currentUser, setCurrentUser} = useContext(CurrentUserContext);
+  const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
   const cookies = new Cookies();
   const { Search } = Input;
 
   const handleOnClick = () => {
-    setCurrentUser({})
-    cookies.remove('token');
-    sessionStorage.removeItem('key')
-  }
+    setCurrentUser({});
+    cookies.remove("token");
+    sessionStorage.removeItem("key");
+  };
 
   const userMenu = (
     <Menu>
-      <Menu.Item key="1" onClick={handleOnClick}>Logout</Menu.Item>
+      {currentUser.role === "Admin" ? (
+        <Menu.Item key="1">
+          <Link to={"/admin/"}> Admin</Link>
+        </Menu.Item>
+      ) : (
+        <></>
+      )}
+      <Menu.Item key="2" onClick={handleOnClick}>
+        Logout
+      </Menu.Item>
     </Menu>
   );
+
+  console.log(currentUser.role === "Admin");
 
   return (
     <div>
@@ -46,12 +57,11 @@ const HeaderAsset = () => {
         ) : (
           <>
             <div style={linkCss}>
-              <Dropdown
-                className="dropdown-btn"
-                overlay={userMenu}
-                
-              >
-                <Link style={linkCss}> <UserOutlined /> Hello {currentUser.firstName} </Link>
+              <Dropdown className="dropdown-btn" overlay={userMenu}>
+                <Link style={linkCss}>
+                  {" "}
+                  <UserOutlined /> Hello {currentUser.firstName}{" "}
+                </Link>
               </Dropdown>
             </div>
           </>
