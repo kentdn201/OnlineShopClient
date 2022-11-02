@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { Cookies } from "react-cookie";
 import { ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
 import CurrentUserContext from "../../../Share/Contexts/CurrentUserContext";
@@ -15,6 +16,7 @@ const linkCss = {
 };
 
 const HeaderAsset = () => {
+  const navigate = useNavigate();
   const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
   const cookies = new Cookies();
   const { Search } = Input;
@@ -22,6 +24,7 @@ const HeaderAsset = () => {
   const handleOnClick = () => {
     setCurrentUser({});
     cookies.remove("token");
+    navigate("/")
     sessionStorage.removeItem("key");
   };
 
