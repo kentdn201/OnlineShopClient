@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Cookies } from "react-cookie";
 import { ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
 import CurrentUserContext from "../../../Share/Contexts/CurrentUserContext";
+import CurrentHeaderContext from "../../../Share/Contexts/CurrentHeaderContext";
 
 import { Link } from "react-router-dom";
 import { Layout, Input, Dropdown, Menu } from "antd";
@@ -18,37 +19,64 @@ const linkCss = {
 const HeaderAsset = () => {
   const navigate = useNavigate();
   const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
+  const { setCurrentHeader } = useContext(CurrentHeaderContext);
   const cookies = new Cookies();
   const { Search } = Input;
 
-  const handleOnClick = () => {
-    setCurrentUser({});
-    cookies.remove("token");
-    navigate("/")
-    sessionStorage.removeItem("key");
+  const handleHome = () => {
+    setCurrentHeader("Home");
   };
 
-  const userMenu = (
-    <Menu>
-      {currentUser.role === "Admin" ? (
-        <Menu.Item key="1">
-          <Link to={"/admin/"}> Admin</Link>
-        </Menu.Item>
-      ) : (
-        <></>
-      )}
-      <Menu.Item key="2" onClick={handleOnClick}>
-        Logout
-      </Menu.Item>
-    </Menu>
-  );
+  const handleAdmin = () => {
+    setCurrentHeader("Admin");
+  };
 
-  console.log(currentUser.role === "Admin");
+  const handleLogout = () => {
+    setCurrentUser({});
+    cookies.remove("token");
+    sessionStorage.removeItem("key");
+    window.location.replace("/");
+    setCurrentHeader("Home");
+  };
+
+  const dropDownAdmin = [
+    {
+      key: "1",
+      label: (
+        <Link to={"/admin/"} onClick={handleAdmin}>
+          {" "}
+          Admin
+        </Link>
+      ),
+    },
+    {
+      key: "2",
+      label: <Link onClick={handleLogout}> Đăng xuất</Link>,
+    },
+  ];
+
+  const dropDownUser = [
+    {
+      key: "1",
+      label: <Link onClick={handleLogout}> Đăng xuất</Link>,
+    },
+  ];
+
+  const userMenu =
+    currentUser.role === "Admin" ? (
+      <>
+        <Menu items={dropDownAdmin}/>
+      </>
+    ) : (
+      <>
+        <Menu items={dropDownUser}/>
+      </>
+    );
 
   return (
     <div>
       <Header style={{ zIndex: 1, width: "100%" }}>
-        <Link to="/" style={{ margin: 16, fontSize: 24 }}>
+        <Link to="/" style={{ margin: 16, fontSize: 24 }} onClick={handleHome}>
           Home
         </Link>
         {currentUser.firstName === undefined ? (

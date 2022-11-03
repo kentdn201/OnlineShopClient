@@ -1,16 +1,19 @@
 import { Menu } from "antd";
-import React, { useContext } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 
 const Category = ({ categories }) => {
+  const categoryList = categories.map(
+    (category) => (
+      {
+        key: category.id,
+        label: <Link to={`danh-muc/${category.slug}`}>{category.name}</Link>,
+      }
+    )
+  )
 
   return (
-    <Menu style={{ padding: "0 50px" }} mode="horizontal">
-      {categories.map((category) => (
-          <Menu.Item  key={category.id}>
-            <Link to={`danh-muc/${category.slug}`}>{category.name}</Link>
-        </Menu.Item>
-      ))}
+    <Menu style={{ padding: "0 50px" }} mode="horizontal" items={categoryList}>
     </Menu>
   );
 };

@@ -12,7 +12,8 @@ import Login from "./Pages/HomePage/Login/Login";
 import CurrentUserContext from "./Share/Contexts/CurrentUserContext";
 import CurrentHeaderContext from "./Share/Contexts/CurrentHeaderContext";
 import AdminPage from "./Pages/AdminPage/AdminPage";
-import ListProduct from "./Pages/AdminPage/Product/ListProduct";
+import SideBar from "./Pages/Layout/Sider/Sidebar";
+import AddProduct from "./Pages/AdminPage/Product/AddProduct";
 
 function App() {
   const cookies = new Cookies();
@@ -54,7 +55,9 @@ function App() {
                   <Category categories={categories} />
                 </>
               ) : (
-                <></>
+                <>
+                  <SideBar/>
+                </>
               )}
               <Routes>
                 <Route
@@ -78,7 +81,7 @@ function App() {
                   <>
                     {/* For admin only */}
                     <Route path="/admin" element={<AdminPage />} />
-                    <Route path="/admin/products" element={<ListProduct />} />
+                    <Route path="/admin/product/add" element={<AddProduct />} />
                   </>
                 ) : (
                   <></>
