@@ -5,14 +5,17 @@ import { Content } from "antd/lib/layout/layout";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import CategoryName from "../../Components/CategoryName/CategoryName";
+import ProductApiURL from "../../Share/ApiURL/ProductApiURL";
 
 const AdminPage = () => {
   const { setCurrentHeader } = useContext(CurrentHeaderContext);
 
   const [listProduct, setListProduct] = useState([]);
+  
+  console.log(ProductApiURL.productsURL);
 
   useEffect(() => {
-    axios.get("http://localhost:8080/product/all").then((response) => {
+    axios.get(`${ProductApiURL.productsURL}`).then((response) => {
       setListProduct(response.data);
       document.title = "Admin / Danh Sách Sản Phẩm";
     });
