@@ -1,30 +1,29 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Layout, Table, Breadcrumb, Space } from "antd";
-import CurrentHeaderContext from "../../Share/Contexts/CurrentHeaderContext";
+import CurrentHeaderContext from "../../../Share/Contexts/CurrentHeaderContext";
 import { Content } from "antd/lib/layout/layout";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import CategoryName from "../../Components/CategoryName/CategoryName";
 
-const AdminPage = () => {
+const CategoryList = () => {
   const { setCurrentHeader } = useContext(CurrentHeaderContext);
 
-  const [listProduct, setListProduct] = useState([]);
+  const [listCategory, setListCategory] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:8080/product/all").then((response) => {
-      setListProduct(response.data);
-      document.title = "Admin / Danh Sách Sản Phẩm";
+    axios.get("http://localhost:8080/category/all").then((response) => {
+        setListCategory(response.data);
+      document.title = "Admin / Danh Sách Các Danh Mục";
     });
   }, []);
  
   const columns = [
     {
       title: "Ảnh",
-      dataIndex: "imageurl",
-      key: "imageurl",
+      dataIndex: "image",
+      key: "image",
       render: (_, data) => {
-        return(<img style={{maxWidth:100}} alt={data.name} src={data.imageurl}/>)
+        return(<img style={{maxWidth:100}} alt={data.name} src={data.image}/>)
       },
     },
     {
@@ -33,19 +32,9 @@ const AdminPage = () => {
       key: "name",
       sorter: (a, b) => a.name.length - b.name.length,
       render: (_, data) => {
-        return(<Link to={`/admin/product/${data.slug}`}>{data.name}</Link>)
+        return(<Link to={`/admin/category/${data.slug}`}>{data.name}</Link>)
       },
     },
-    {
-      title: "Danh Mục",
-      dataIndex: "categoryId",
-      key: "category",
-      sorter: (a, b) => a.categoryId - b.categoryId,
-      render: (_, data) => {
-        return(<CategoryName categoryId={data.categoryId}/>)
-      }
-    },
-    
   {
     title: 'Action',
     key: 'action',
@@ -57,16 +46,14 @@ const AdminPage = () => {
   },
   ];
 
-  const data = listProduct.map((product, index) => (
+  const data = listCategory.map((category, index) => (
     {
-      name: product.name,
+      name: category.name,
       key: `product ${index}`,
-      categoryId: product.categoryId,
-      imageurl: product.imageURL,
-      slug: product.slug
+      image: category.image,
+      slug: category.slug
     }
   ))
-
 
   if (performance.getEntriesByType("navigation")[0].type) {
     setCurrentHeader("Admin");
@@ -90,7 +77,7 @@ const AdminPage = () => {
             <Link to={"/"}>Trang Chủ</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>Admin</Breadcrumb.Item>
-          <Breadcrumb.Item>Danh Sách Sản Phẩm</Breadcrumb.Item>
+          <Breadcrumb.Item>Danh Sách Các Danh Mục</Breadcrumb.Item>
         </Breadcrumb>
         <Table columns={columns} dataSource={data}  />
       </Content>
@@ -98,4 +85,4 @@ const AdminPage = () => {
   );
 };
 
-export default AdminPage;
+export default CategoryList;

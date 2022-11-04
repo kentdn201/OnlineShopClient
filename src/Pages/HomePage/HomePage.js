@@ -36,7 +36,7 @@ function HomePage({categories}) {
           {categories.map((category) => (
             <Card.Grid style={gridStyle} key={category.id}>
               <Link to={`danh-muc/${category.slug}`}>
-                <img alt={category.name} src={category.image} />
+                <img width={128} alt={category.name} src={category.image} />
               </Link>
             </Card.Grid>
           ))}

@@ -4,7 +4,7 @@ import "antd/dist/antd.min.css";
 import GetOneProduct from "./Pages/HomePage/GetOneProduct/GetOneProduct";
 import HeaderAsset from "./Pages/Layout/Header/Header";
 import Category from "./Pages/Layout/Category/Category";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Cookies, CookiesProvider } from "react-cookie";
 import GetProductsByCategory from "./Pages/HomePage/Category/GetProductsByCategory";
@@ -14,6 +14,9 @@ import CurrentHeaderContext from "./Share/Contexts/CurrentHeaderContext";
 import AdminPage from "./Pages/AdminPage/AdminPage";
 import SideBar from "./Pages/Layout/Sider/Sidebar";
 import AddProduct from "./Pages/AdminPage/Product/AddProduct";
+import ViewProduct from "./Pages/AdminPage/Product/ViewProduct";
+import CategoryList from "./Pages/AdminPage/Category/CategoryList";
+import AddCategory from "./Pages/AdminPage/Category/AddCategory";
 
 function App() {
   const cookies = new Cookies();
@@ -81,7 +84,10 @@ function App() {
                   <>
                     {/* For admin only */}
                     <Route path="/admin" element={<AdminPage />} />
-                    <Route path="/admin/product/add" element={<AddProduct />} />
+                    <Route path="/admin/product/add" element={<AddProduct categories={categories} />} />
+                    <Route path="/admin/product/:slug" element={<ViewProduct />}/>
+                    <Route path="/admin/category/" element={<CategoryList/>}/>
+                    <Route path="/admin/category/add" element={<AddCategory/>}/>
                   </>
                 ) : (
                   <></>

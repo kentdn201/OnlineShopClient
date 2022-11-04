@@ -26,11 +26,11 @@ const SideBar = () => {
       children: [
         {
           key: "child-cate-1",
-          label: "Danh Sách",
+          label: <Link to={"/admin/category/"}>Danh Sách Danh Mục</Link>,
         },
         {
           key: "child-cate-2",
-          label: "Thêm Danh Mục Mới",
+          label: <Link to={"/admin/category/add"}>Thêm Một Danh Mục Mới</Link>,
         },
       ],
     },

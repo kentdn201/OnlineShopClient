@@ -14,7 +14,7 @@ const ListProduct = ({ productList }) => {
                 width: "auto",
                 marginTop: 8,
               }}
-              cover={<img alt="example" src={`${product.imageURL}`} />}
+              cover={<img width={200} alt="example" src={`${product.imageURL}`} />}
             >
               <Meta
                 title={product.name}
