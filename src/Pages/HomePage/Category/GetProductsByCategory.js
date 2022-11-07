@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import ListProduct from "../../../Components/ListProduct/ListProduct";
+import ListProductWithPaginate from "../../../Components/ListProduct/ListProductWithPaginate";
 
 const GetProductsByCategory = () => {
   const slug = useParams().slug;
@@ -28,7 +28,7 @@ const GetProductsByCategory = () => {
       <h4>
         <Link to={"/"}>Trang chủ </Link> {"->"} {category.name}
       </h4>
-      <ListProduct productList={productList} />
+      <ListProductWithPaginate listProduct={productList} currentPages={1} productsPerPages={8} showMore={true}/>
 
     </div>
   );

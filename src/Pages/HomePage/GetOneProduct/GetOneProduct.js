@@ -2,27 +2,33 @@ import { Button, Row, Col } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import isLoadingComponent from "../../../Components/isLoading/isLoadingComponent";
 import ListProduct from "../../../Components/ListProduct/ListProduct";
 
 const GetOneProduct = () => {
   const [product, setProduct] = useState({});
   const [listProduct, setListProduct] = useState([]);
   const [category, setCategory] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const slug = useParams().slug;
 
   useEffect(() => {
+    setIsLoading(true);
     axios.get(`http://localhost:8080/product/${slug}`).then((response) => {
       setProduct(response.data);
+      setIsLoading(false);
       setCategory(response.data.category.slug);
-      document.title=`${response.data.name}`
+      document.title = `${response.data.name}`;
     });
   }, [slug]);
 
   useEffect(() => {
+    setIsLoading(true);
     axios
       .get(`http://localhost:8080/category/${category}/san-pham`)
       .then((response) => {
+        setIsLoading(false);
         setListProduct(response.data);
         console.log(response.data);
       });
@@ -30,6 +36,13 @@ const GetOneProduct = () => {
 
   return (
     <div>
+      {isLoading ? (
+        <>
+          <isLoadingComponent />
+        </>
+      ) : (
+        <></>
+      )}
       <div className="title" style={{ margin: "4px 16px", padding: "0 50px" }}>
         <h4>
           Trang Chủ -{">"} {product.name}

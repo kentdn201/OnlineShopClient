@@ -11,12 +11,15 @@ const AdminPage = () => {
   const { setCurrentHeader } = useContext(CurrentHeaderContext);
 
   const [listProduct, setListProduct] = useState([]);
+  const [loading, setLoading] = useState(false);
   
   console.log(ProductApiURL.productsURL);
 
   useEffect(() => {
+    setLoading(true)
     axios.get(`${ProductApiURL.productsURL}`).then((response) => {
       setListProduct(response.data);
+      setLoading(false);
       document.title = "Admin / Danh Sách Sản Phẩm";
     });
   }, []);
@@ -95,7 +98,7 @@ const AdminPage = () => {
           <Breadcrumb.Item>Admin</Breadcrumb.Item>
           <Breadcrumb.Item>Danh Sách Sản Phẩm</Breadcrumb.Item>
         </Breadcrumb>
-        <Table columns={columns} dataSource={data}  />
+        <Table columns={columns} loading={loading} dataSource={data}  />
       </Content>
     </Layout>
   );

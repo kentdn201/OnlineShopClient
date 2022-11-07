@@ -24,8 +24,12 @@ const ListProductWithPaginate = ({
   };
 
   const onLoadMore = () => {
-    setProductsPerPage(productsPerPage + 4);
+    setProductsPerPage(productsPerPage + 1);
   };
+
+  if(productsPerPage >= listProduct.length){
+    showMore = false;
+  }
 
   return (
     <div>
@@ -52,7 +56,7 @@ const ListProductWithPaginate = ({
               lineHeight: "32px",
             }}
           >
-            <Button onClick={onLoadMore}>loading more</Button>
+            <Button onClick={onLoadMore}>Xem thêm</Button>
           </div>
         </>
       ) : (

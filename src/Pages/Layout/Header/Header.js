@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Cookies } from "react-cookie";
 import { ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
@@ -17,11 +17,13 @@ const linkCss = {
 };
 
 const HeaderAsset = () => {
-  const navigate = useNavigate();
   const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
   const { setCurrentHeader } = useContext(CurrentHeaderContext);
   const cookies = new Cookies();
   const { Search } = Input;
+  const [keyword, setKeyword] = useState("");
+
+  const navigate = useNavigate();
 
   const handleHome = () => {
     setCurrentHeader("Home");
@@ -65,14 +67,17 @@ const HeaderAsset = () => {
   const userMenu =
     currentUser.role === "Admin" ? (
       <>
-        <Menu items={dropDownAdmin}/>
+        <Menu items={dropDownAdmin} />
       </>
     ) : (
       <>
-        <Menu items={dropDownUser}/>
+        <Menu items={dropDownUser} />
       </>
     );
 
+  const handleFinish = () => {
+    navigate(`/product/search/${keyword}`);
+  };
   return (
     <div>
       <Header style={{ zIndex: 1, width: "100%" }}>
@@ -110,6 +115,9 @@ const HeaderAsset = () => {
             float: "right",
             margin: 16,
           }}
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+          onSearch={handleFinish}
         />
       </Header>
     </div>

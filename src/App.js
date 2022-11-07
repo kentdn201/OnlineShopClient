@@ -17,6 +17,7 @@ import AddProduct from "./Pages/AdminPage/Product/AddProduct";
 import ViewProduct from "./Pages/AdminPage/Product/ViewProduct";
 import CategoryList from "./Pages/AdminPage/Category/CategoryList";
 import AddCategory from "./Pages/AdminPage/Category/AddCategory";
+import Search from "./Pages/HomePage/Search/Search";
 
 function App() {
   const cookies = new Cookies();
@@ -52,7 +53,7 @@ function App() {
             <CurrentHeaderContext.Provider
               value={{ currentHeader, setCurrentHeader }}
             >
-              <HeaderAsset />
+              <HeaderAsset listProduct={categories}/>
               {currentHeader !== "Admin" ? (
                 <>
                   <Category categories={categories} />
@@ -72,6 +73,14 @@ function App() {
                 <Route
                   path="/danh-muc/:slug"
                   element={<GetProductsByCategory />}
+                />
+                <Route
+                  path="/product/search/:keyword"
+                  element={<Search/>}
+                />
+                <Route
+                  path="/product/search/"
+                  element={<Search/>}
                 />
                 {tokenDecryption === undefined ? (
                   <>
