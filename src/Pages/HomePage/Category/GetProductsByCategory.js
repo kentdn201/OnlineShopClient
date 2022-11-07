@@ -29,6 +29,7 @@ const GetProductsByCategory = () => {
         <Link to={"/"}>Trang chủ </Link> {"->"} {category.name}
       </h4>
       <ListProduct productList={productList} />
+
     </div>
   );
 };

@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import React, {useState, useEffect} from "react";
 import CarouselAsset from "../Layout/Carousel/CarouselAsset";
 import FooterAsset from "../Layout/Footer/FooterAsset";
-import ListProduct from "../../Components/ListProduct/ListProduct";
 import axios from "axios";
+import ListProductWithPaginate from "../../Components/ListProduct/ListProductWithPaginate";
 const { Content } = Layout;
 
 const gridStyle = {
@@ -13,7 +13,7 @@ const gridStyle = {
 };
 
 function HomePage({categories}) {
-  const [listProduct, setListProduct] = useState([])
+  const [listProduct, setListProduct] = useState([]);
 
   useEffect(() => {
       axios.get("http://localhost:8080/product/all").then(response => {
@@ -57,7 +57,7 @@ function HomePage({categories}) {
           </Link>
         </div>
 
-        <ListProduct productList={listProduct}/>
+        <ListProductWithPaginate listProduct={listProduct} currentPages={1} productsPerPages={8}/>
       </Content>
       <FooterAsset />
     </Layout>
