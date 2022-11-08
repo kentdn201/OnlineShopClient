@@ -3,12 +3,12 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ListProductWithPaginate from "../../../Components/ListProduct/ListProductWithPaginate";
 import ProductApiURL from "../../../Share/ApiURL/ProductApiURL";
-import isLoadingComponent from "../../../Components/isLoading/isLoadingComponent";
+import LoadingComponent from "../../../Components/isLoadingComponent/LoadingComponent";
 
 const Search = () => {
   let keyword = useParams().keyword;
 
-  if (keyword == undefined) {
+  if (keyword === undefined) {
     keyword = "";
   }
 
@@ -27,7 +27,7 @@ const Search = () => {
     <div>
       {isLoading ? (
         <>
-            <isLoadingComponent/>
+            <LoadingComponent />
         </>
       ) : (
         <>

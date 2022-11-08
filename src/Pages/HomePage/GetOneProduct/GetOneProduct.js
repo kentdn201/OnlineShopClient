@@ -1,9 +1,10 @@
-import { Button, Row, Col } from "antd";
+import { Button, Row, Col, Form } from "antd";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import isLoadingComponent from "../../../Components/isLoading/isLoadingComponent";
 import ListProduct from "../../../Components/ListProduct/ListProduct";
+import LoadingComponent from "../../../Components/isLoadingComponent/LoadingComponent";
+import { CartContext } from "../../../Share/Contexts/Context";
 
 const GetOneProduct = () => {
   const [product, setProduct] = useState({});
@@ -30,15 +31,17 @@ const GetOneProduct = () => {
       .then((response) => {
         setIsLoading(false);
         setListProduct(response.data);
-        console.log(response.data);
       });
   }, [category]);
+
+  const GlobalState = useContext(CartContext);
+  const dispatch = GlobalState.dispatch;
 
   return (
     <div>
       {isLoading ? (
         <>
-          <isLoadingComponent />
+          <LoadingComponent />
         </>
       ) : (
         <></>
@@ -62,7 +65,16 @@ const GetOneProduct = () => {
           <br />
           <h2>Mô tả sản phẩm: {product.description}</h2>
           <h4 style={{ marginTop: 10 }}>Giá: {product.price} VNĐ</h4>
-          <Button style={{ marginTop: 10 }}>Thêm Sản Phẩm Vào Giỏ Hàng</Button>
+          <input type="hidden" value={product.quantity = 1}/>
+          <Form>
+            <Button
+              htmlType="submit"
+              style={{ marginTop: 10 }}
+              onClick={() => dispatch({type:'ADD_TO_CART', payload:product})}
+            >
+              Thêm Sản Phẩm Vào Giỏ Hàng
+            </Button>
+          </Form>
         </Col>
       </Row>
 

@@ -1,8 +1,9 @@
 import React, { useContext, useEffect } from "react";
-import { Button, Form, Layout, Breadcrumb } from "antd";
+import { Button, Form, Input, Layout, Breadcrumb } from "antd";
 import { Link, useParams } from "react-router-dom";
 import CurrentHeaderContext from "../../../Share/Contexts/CurrentHeaderContext";
 import { Content } from "antd/lib/layout/layout";
+import TextArea from "antd/lib/input/TextArea";
 import axios from "axios";
 import { useState } from "react";
 const layout = {
@@ -75,6 +76,7 @@ const ViewProduct = () => {
           <Form.Item name="categoryId" label="Danh Mục">
             {categoryName}
           </Form.Item>
+
           <Form.Item
             wrapperCol={{
               ...layout.wrapperCol,

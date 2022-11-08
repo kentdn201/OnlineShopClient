@@ -5,6 +5,7 @@ import CarouselAsset from "../Layout/Carousel/CarouselAsset";
 import FooterAsset from "../Layout/Footer/FooterAsset";
 import axios from "axios";
 import ListProductWithPaginate from "../../Components/ListProduct/ListProductWithPaginate";
+import ProductApiURL from "../../Share/ApiURL/ProductApiURL";
 const { Content } = Layout;
 
 const gridStyle = {
@@ -16,7 +17,7 @@ function HomePage({categories}) {
   const [listProduct, setListProduct] = useState([]);
 
   useEffect(() => {
-      axios.get("http://localhost:8080/product/all").then(response => {
+      axios.get(`${ProductApiURL.productsURL}`).then(response => {
         setListProduct(response.data)
         document.title="Online Shop"
       })

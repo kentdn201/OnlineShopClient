@@ -11,9 +11,7 @@ const CategoryName = ({categoryId}) => {
     }, [])
 
     return(
-        <div>
-            {category.name}
-        </div>
+            category.name
     )
 }
 

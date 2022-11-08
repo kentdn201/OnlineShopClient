@@ -4,7 +4,7 @@ import "antd/dist/antd.min.css";
 import GetOneProduct from "./Pages/HomePage/GetOneProduct/GetOneProduct";
 import HeaderAsset from "./Pages/Layout/Header/Header";
 import Category from "./Pages/Layout/Category/Category";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Cookies, CookiesProvider } from "react-cookie";
 import GetProductsByCategory from "./Pages/HomePage/Category/GetProductsByCategory";
@@ -18,6 +18,8 @@ import ViewProduct from "./Pages/AdminPage/Product/ViewProduct";
 import CategoryList from "./Pages/AdminPage/Category/CategoryList";
 import AddCategory from "./Pages/AdminPage/Category/AddCategory";
 import Search from "./Pages/HomePage/Search/Search";
+import Cart from "./Pages/HomePage/Cart/Cart";
+import { CartContext } from "./Share/Contexts/Context";
 
 function App() {
   const cookies = new Cookies();
@@ -25,6 +27,15 @@ function App() {
   const [currentUser, setCurrentUser] = useState({});
   const [currentHeader, setCurrentHeader] = useState("Home");
   const tokenDecryption = cookies.get("token");
+
+  const GlobalState = useContext(CartContext)
+  const state = GlobalState.state;
+
+  useEffect(() => {
+    window.localStorage.setItem("cart", JSON.stringify(state))
+  }, [state])
+
+  console.log(localStorage.getItem("cart"))
 
   useEffect(() => {
     if (tokenDecryption === undefined) {
@@ -53,14 +64,14 @@ function App() {
             <CurrentHeaderContext.Provider
               value={{ currentHeader, setCurrentHeader }}
             >
-              <HeaderAsset listProduct={categories}/>
+              <HeaderAsset listProduct={categories} />
               {currentHeader !== "Admin" ? (
                 <>
                   <Category categories={categories} />
                 </>
               ) : (
                 <>
-                  <SideBar/>
+                  <SideBar />
                 </>
               )}
               <Routes>
@@ -74,14 +85,9 @@ function App() {
                   path="/danh-muc/:slug"
                   element={<GetProductsByCategory />}
                 />
-                <Route
-                  path="/product/search/:keyword"
-                  element={<Search/>}
-                />
-                <Route
-                  path="/product/search/"
-                  element={<Search/>}
-                />
+                <Route path="/product/search/" element={<Search />} />
+                <Route path="/product/search/:keyword" element={<Search />} />
+                <Route path="/cart" element={<Cart/>}/>
                 {tokenDecryption === undefined ? (
                   <>
                     <Route path="/login" element={<Login />} />
@@ -93,10 +99,19 @@ function App() {
                   <>
                     {/* For admin only */}
                     <Route path="/admin" element={<AdminPage />} />
-                    <Route path="/admin/product/add" element={<AddProduct categories={categories} />} />
-                    <Route path="/admin/product/:slug" element={<ViewProduct />}/>
-                    <Route path="/admin/category/" element={<CategoryList/>}/>
-                    <Route path="/admin/category/add" element={<AddCategory/>}/>
+                    <Route
+                      path="/admin/product/add"
+                      element={<AddProduct categories={categories} />}
+                    />
+                    <Route
+                      path="/admin/product/:slug"
+                      element={<ViewProduct />}
+                    />
+                    <Route path="/admin/category/" element={<CategoryList />} />
+                    <Route
+                      path="/admin/category/add"
+                      element={<AddCategory />}
+                    />
                   </>
                 ) : (
                   <></>

@@ -1,7 +1,7 @@
 import React from "react";
 import { Spin } from "antd";
 
-const isLoadingComponent = () => {
+const LoadingComponent = () => {
   return (
     <div className="isLoading">
       <Spin />
@@ -9,4 +9,4 @@ const isLoadingComponent = () => {
   );
 };
 
-export default isLoadingComponent;
+export default LoadingComponent;

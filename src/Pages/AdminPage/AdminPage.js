@@ -12,8 +12,6 @@ const AdminPage = () => {
 
   const [listProduct, setListProduct] = useState([]);
   const [loading, setLoading] = useState(false);
-  
-  console.log(ProductApiURL.productsURL);
 
   useEffect(() => {
     setLoading(true)
