@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import HomePage from "./Pages/HomePage/HomePage";
 import "antd/dist/antd.min.css";
 import GetOneProduct from "./Pages/HomePage/GetOneProduct/GetOneProduct";
@@ -19,23 +19,21 @@ import CategoryList from "./Pages/AdminPage/Category/CategoryList";
 import AddCategory from "./Pages/AdminPage/Category/AddCategory";
 import Search from "./Pages/HomePage/Search/Search";
 import Cart from "./Pages/HomePage/Cart/Cart";
-import { CartContext } from "./Share/Contexts/Context";
 
 function App() {
   const cookies = new Cookies();
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const length = cart.length;
+  console.log(length);
   const [categories, setCategorise] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
   const [currentHeader, setCurrentHeader] = useState("Home");
   const tokenDecryption = cookies.get("token");
 
-  const GlobalState = useContext(CartContext)
-  const state = GlobalState.state;
-
-  useEffect(() => {
-    window.localStorage.setItem("cart", JSON.stringify(state))
-  }, [state])
-
-  console.log(localStorage.getItem("cart"))
+  if(localStorage.getItem("cart") === null)
+  {
+    localStorage.setItem("cart", JSON.stringify([]))
+  }
 
   useEffect(() => {
     if (tokenDecryption === undefined) {
@@ -87,7 +85,7 @@ function App() {
                 />
                 <Route path="/product/search/" element={<Search />} />
                 <Route path="/product/search/:keyword" element={<Search />} />
-                <Route path="/cart" element={<Cart/>}/>
+                <Route path="/cart" element={<Cart />} />
                 {tokenDecryption === undefined ? (
                   <>
                     <Route path="/login" element={<Login />} />

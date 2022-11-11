@@ -32,11 +32,9 @@ const Context = (props) => {
         return itemToDecrease;
 
       case "REMOVE":
-        const itemToRemove = state.filter(
-            (item) => {
-                return item.id !== action.payload.id
-            }
-        );
+        const itemToRemove = state.filter((item) => {
+          return item.id !== action.payload.id;
+        });
         return itemToRemove;
 
       default:

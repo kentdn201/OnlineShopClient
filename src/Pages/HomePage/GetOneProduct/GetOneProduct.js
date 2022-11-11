@@ -1,41 +1,69 @@
 import { Button, Row, Col, Form } from "antd";
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ListProduct from "../../../Components/ListProduct/ListProduct";
 import LoadingComponent from "../../../Components/isLoadingComponent/LoadingComponent";
-import { CartContext } from "../../../Share/Contexts/Context";
 
 const GetOneProduct = () => {
   const [product, setProduct] = useState({});
   const [listProduct, setListProduct] = useState([]);
-  const [category, setCategory] = useState([]);
+  const [categoryId, setCategoryId] = useState();
+  const [categorySlug, setCategorySlug] = useState();
   const [isLoading, setIsLoading] = useState(false);
+
+  const [items, setItems] = useState(
+    JSON.parse(localStorage.getItem("cart")) ?? []
+  );
 
   const slug = useParams().slug;
 
   useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(items));
+  }, [items]);
+
+  useEffect(() => {
+    const cart = JSON.parse(localStorage.getItem("cart"));
+    if (cart) {
+      setItems(cart);
+    }
+  }, []);
+
+  useEffect(() => {
     setIsLoading(true);
-    axios.get(`http://localhost:8080/product/${slug}`).then((response) => {
-      setProduct(response.data);
-      setIsLoading(false);
-      setCategory(response.data.category.slug);
-      document.title = `${response.data.name}`;
-    });
+    async function getProduct() {
+      await axios
+        .get(`http://localhost:8080/product/${slug}`)
+        .then((response) => {
+          setCategoryId(response.data.categoryId);
+          setProduct(response.data);
+          setIsLoading(false);
+          document.title = `${response.data.name}`;
+        });
+    }
+    getProduct();
   }, [slug]);
 
   useEffect(() => {
     setIsLoading(true);
+    if (product)
+      axios
+        .get(`http://localhost:8080/category/danh-muc/${categoryId}`)
+        .then((response) => {
+          setCategorySlug(response.data.slug);
+          setIsLoading(false);
+        });
+  }, [categoryId]);
+
+  useEffect(() => {
+    setIsLoading(true);
     axios
-      .get(`http://localhost:8080/category/${category}/san-pham`)
+      .get(`http://localhost:8080/category/${categorySlug}/san-pham`)
       .then((response) => {
         setIsLoading(false);
         setListProduct(response.data);
       });
-  }, [category]);
-
-  const GlobalState = useContext(CartContext);
-  const dispatch = GlobalState.dispatch;
+  }, [categorySlug]);
 
   return (
     <div>
@@ -65,12 +93,21 @@ const GetOneProduct = () => {
           <br />
           <h2>Mô tả sản phẩm: {product.description}</h2>
           <h4 style={{ marginTop: 10 }}>Giá: {product.price} VNĐ</h4>
-          <input type="hidden" value={product.quantity = 1}/>
+          <input type="hidden" value={(product.quantity = 1)} />
           <Form>
             <Button
               htmlType="submit"
               style={{ marginTop: 10 }}
-              onClick={() => dispatch({type:'ADD_TO_CART', payload:product})}
+              onClick={() => {
+                const tempstate = items.filter(
+                  (item) => product.id === item.id
+                );
+                if (tempstate.length > 0) {
+                  return setItems((prev => [...prev]));
+                } else {
+                  return setItems((prev) => [...prev, product]);
+                }
+              }}
             >
               Thêm Sản Phẩm Vào Giỏ Hàng
             </Button>

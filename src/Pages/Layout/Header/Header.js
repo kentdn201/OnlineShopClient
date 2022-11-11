@@ -7,6 +7,7 @@ import CurrentHeaderContext from "../../../Share/Contexts/CurrentHeaderContext";
 
 import { Link } from "react-router-dom";
 import { Layout, Input, Dropdown, Menu } from "antd";
+import { useEffect } from "react";
 const { Header } = Layout;
 
 const linkCss = {
@@ -16,12 +17,27 @@ const linkCss = {
   fontSize: 16,
 };
 
+
 const HeaderAsset = () => {
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const length = cart.length;
   const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
-  const { setCurrentHeader } = useContext(CurrentHeaderContext);
+  const { currentHeader ,setCurrentHeader } = useContext(CurrentHeaderContext);
   const cookies = new Cookies();
+  const [count, setCount] = useState(length);
   const { Search } = Input;
   const [keyword, setKeyword] = useState("");
+
+  useEffect(() => {
+    setCount(length);
+  })
+
+  useEffect(() => {
+    if(length === 0)
+    {
+      localStorage.setItem("cart", JSON.stringify(cart))
+    }
+  })
 
   const navigate = useNavigate();
 
@@ -37,6 +53,7 @@ const HeaderAsset = () => {
     setCurrentUser({});
     cookies.remove("token");
     sessionStorage.removeItem("key");
+    localStorage.removeItem("cart")
     window.location.replace("/");
     setCurrentHeader("Home");
   };
@@ -104,7 +121,7 @@ const HeaderAsset = () => {
         )}
 
         <Link to="/cart" style={linkCss}>
-          <ShoppingCartOutlined /> Cart
+          <ShoppingCartOutlined /> Cart {count === 0 ? <></> : <>({count})</>}
         </Link>
 
         <Search
