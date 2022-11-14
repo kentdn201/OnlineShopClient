@@ -1,8 +1,20 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Button, Space, Table, Form, Input, InputNumber, Row, Col } from "antd";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  Button,
+  Space,
+  Table,
+  Form,
+  Input,
+  Radio,
+  Row,
+  Col,
+  notification,
+} from "antd";
 import CurrentUserContext from "../../../Share/Contexts/CurrentUserContext";
 import CurrentHeaderContext from "../../../Share/Contexts/CurrentHeaderContext";
+import axios from "axios";
+import OrderApiURL from "../../../Share/ApiURL/OrderApiURL";
 
 const layout = {
   labelCol: {
@@ -13,6 +25,23 @@ const layout = {
   },
 };
 
+const rules = (name, min, max) => [
+  {
+    validator: (_, value) => {
+      const lengthMin = min;
+      const lengthMax = max;
+      if (value <= 0) {
+        return Promise.reject(new Error(`Vui lòng nhập ${name}`));
+      } else if (value.length < lengthMin || value.length > lengthMax) {
+        return Promise.reject(
+          new Error(`${name} ít nhất ${min} - ${max} kí tự`)
+        );
+      }
+      return Promise.resolve();
+    },
+  },
+];
+
 const Cart = () => {
   const { setCurrentHeader } = useContext(CurrentHeaderContext);
   if (performance.getEntriesByType("navigation")[0].type) {
@@ -20,6 +49,10 @@ const Cart = () => {
   }
   const [loading] = useState(false);
   const { currentUser } = useContext(CurrentUserContext);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const userId = currentUser.id;
 
   const [cartItems, setCartItems] = useState(
     JSON.parse(localStorage.getItem("cart") ?? [])
@@ -36,8 +69,34 @@ const Cart = () => {
     }
   }, []);
 
+  const openNotificationWithIcon = (type) => {
+    notification[type]({
+      message: "Đặt hàng thất bại",
+      description: "Vui lòng điện lại thông tin",
+    });
+  };
+
+  const openNotificationWithIconSuccess = (type) => {
+    notification[type]({
+      message: "Đặt hàng thành công",
+    });
+  };
+
   const onFinish = (values) => {
-    console.log(values);
+    values.productOrderDtos = cartItems;
+    console.log(`${OrderApiURL.addOrder}${userId}`);
+    axios
+      .post(`${OrderApiURL.addOrder}${userId}`, values)
+      .then((response) => {
+        openNotificationWithIconSuccess("success");
+        localStorage.removeItem("cart");
+        navigate("/");
+      })
+      .catch((err) => {
+        setError(err.response.data);
+        console.log(err.response.data);
+        openNotificationWithIcon("error");
+      });
   };
 
   const total = cartItems.reduce((total, item) => {
@@ -169,7 +228,7 @@ const Cart = () => {
       >
         Giỏ Hàng
       </h2>
-      {currentUser.role === undefined  ? (
+      {currentUser.role === undefined ? (
         <>
           <h2
             style={{
@@ -210,42 +269,27 @@ const Cart = () => {
                     onFinish={onFinish}
                   >
                     <Form.Item
-                      name={["user", "name"]}
-                      rules={[
-                        {
-                          required: true,
-                        },
-                      ]}
+                      name="address"
+                      rules={rules("Địa chỉ nhận hàng", 5, 100)}
                     >
-                      <Input />
+                      <Input placeholder="Địa chỉ nhận hàng" />
+                    </Form.Item>
+                    <Form.Item name="note">
+                      <Input.TextArea placeholder="Chú thích" />
                     </Form.Item>
                     <Form.Item
-                      name={["user", "email"]}
-                      rules={[
-                        {
-                          type: "email",
-                        },
-                      ]}
+                      name="phoneNumber"
+                      rules={rules("Số điện thoại", 10, 11)}
                     >
-                      <Input />
+                      <Input placeholder="Vui lòng nhập số điện thoại" />
                     </Form.Item>
-                    <Form.Item
-                      name={["user", "age"]}
-                      rules={[
-                        {
-                          type: "number",
-                          min: 0,
-                          max: 99,
-                        },
-                      ]}
-                    >
-                      <InputNumber />
-                    </Form.Item>
-                    <Form.Item name={["user", "website"]}>
-                      <Input />
-                    </Form.Item>
-                    <Form.Item name={["user", "introduction"]}>
-                      <Input.TextArea />
+                    <Form.Item name="typePayment">
+                      <Radio.Group>
+                        <Radio value="Thanh Toán Trực Tiếp">
+                          {" "}
+                          Thanh Toán Trực Tiếp{" "}
+                        </Radio>
+                      </Radio.Group>
                     </Form.Item>
                     <Form.Item
                       wrapperCol={{

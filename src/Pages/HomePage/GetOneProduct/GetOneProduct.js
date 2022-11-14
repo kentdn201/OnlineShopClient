@@ -65,6 +65,10 @@ const GetOneProduct = () => {
       });
   }, [categorySlug]);
 
+  const formatter = new Intl.NumberFormat("en-US", {
+    currency: "VND",
+  });
+
   return (
     <div>
       {isLoading ? (
@@ -92,7 +96,7 @@ const GetOneProduct = () => {
           <br />
           <br />
           <h2>Mô tả sản phẩm: {product.description}</h2>
-          <h4 style={{ marginTop: 10 }}>Giá: {product.price} VNĐ</h4>
+          <h4 style={{ marginTop: 10 }}>Giá: {formatter.format(product.price)} VNĐ</h4>
           <input type="hidden" value={(product.quantity = 1)} />
           <Form>
             <Button

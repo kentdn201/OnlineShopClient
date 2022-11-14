@@ -1,10 +1,10 @@
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./Pages/HomePage/HomePage";
 import "antd/dist/antd.min.css";
 import GetOneProduct from "./Pages/HomePage/GetOneProduct/GetOneProduct";
 import HeaderAsset from "./Pages/Layout/Header/Header";
 import Category from "./Pages/Layout/Category/Category";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Cookies, CookiesProvider } from "react-cookie";
 import GetProductsByCategory from "./Pages/HomePage/Category/GetProductsByCategory";
@@ -19,12 +19,12 @@ import CategoryList from "./Pages/AdminPage/Category/CategoryList";
 import AddCategory from "./Pages/AdminPage/Category/AddCategory";
 import Search from "./Pages/HomePage/Search/Search";
 import Cart from "./Pages/HomePage/Cart/Cart";
+import Order from "./Pages/HomePage/Order/Order";
+import OrderDetail from "./Pages/HomePage/Order/OrderDetail";
+import OrderList from "./Pages/AdminPage/Order/OrderList";
 
 function App() {
   const cookies = new Cookies();
-  const cart = JSON.parse(localStorage.getItem("cart")) || [];
-  const length = cart.length;
-  console.log(length);
   const [categories, setCategorise] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
   const [currentHeader, setCurrentHeader] = useState("Home");
@@ -86,6 +86,8 @@ function App() {
                 <Route path="/product/search/" element={<Search />} />
                 <Route path="/product/search/:keyword" element={<Search />} />
                 <Route path="/cart" element={<Cart />} />
+                <Route path="/order/:id" element={<Order/>} />
+                <Route path="/don-hang/:orderid/:userid" element={<OrderDetail/>} />
                 {tokenDecryption === undefined ? (
                   <>
                     <Route path="/login" element={<Login />} />
@@ -110,6 +112,7 @@ function App() {
                       path="/admin/category/add"
                       element={<AddCategory />}
                     />
+                    <Route path="/admin/don-hang/" element={<OrderList/>}/>
                   </>
                 ) : (
                   <></>

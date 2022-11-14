@@ -40,7 +40,7 @@ const SideBar = () => {
       children: [
         {
           key: "child-order-1",
-          label: "Danh Sách",
+          label: <Link to={"/admin/don-hang"}>Danh Sách Đơn Đặt Hàng</Link>,
         },
       ],
     },

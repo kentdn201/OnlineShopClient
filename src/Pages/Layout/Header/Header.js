@@ -21,16 +21,19 @@ const linkCss = {
 const HeaderAsset = () => {
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
   const length = cart.length;
+
   const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
-  const { currentHeader ,setCurrentHeader } = useContext(CurrentHeaderContext);
+  const { setCurrentHeader } = useContext(CurrentHeaderContext);
   const cookies = new Cookies();
   const [count, setCount] = useState(length);
   const { Search } = Input;
   const [keyword, setKeyword] = useState("");
 
+  const userId = currentUser.id;
+
   useEffect(() => {
     setCount(length);
-  })
+  }, [length])
 
   useEffect(() => {
     if(length === 0)
@@ -70,6 +73,10 @@ const HeaderAsset = () => {
     },
     {
       key: "2",
+      label: <Link to={`/order/${userId}`}> Danh Sách Đơn Hàng</Link>,
+    },
+    {
+      key: "3",
       label: <Link onClick={handleLogout}> Đăng xuất</Link>,
     },
   ];
@@ -77,6 +84,10 @@ const HeaderAsset = () => {
   const dropDownUser = [
     {
       key: "1",
+      label: <Link to={`/order/${userId}`}> Danh Sách Đơn Hàng</Link>,
+    },
+    {
+      key: "2",
       label: <Link onClick={handleLogout}> Đăng xuất</Link>,
     },
   ];

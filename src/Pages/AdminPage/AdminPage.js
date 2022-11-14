@@ -16,6 +16,7 @@ const AdminPage = () => {
   useEffect(() => {
     setLoading(true)
     axios.get(`${ProductApiURL.productsURL}`).then((response) => {
+      console.log("useEffect")
       setListProduct(response.data);
       setLoading(false);
       document.title = "Admin / Danh Sách Sản Phẩm";
@@ -70,6 +71,8 @@ const AdminPage = () => {
       slug: product.slug
     }
   ))
+
+  console.log(data);
 
 
   if (performance.getEntriesByType("navigation")[0].type) {

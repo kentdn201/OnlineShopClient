@@ -40,7 +40,6 @@ const AddProduct = ({ categories }) => {
       validator: (_, value) => {
         const lengthMin = min;
         const lengthMax = max;
-        console.log(value.length);
         if (value <= 0) {
           return Promise.reject(new Error(`Vui lòng nhập ${name}`));
         } else if (value.length < lengthMin || value.length > lengthMax) {
@@ -58,7 +57,6 @@ const AddProduct = ({ categories }) => {
   }
   const onFinish = (values) => {
     values.price = parseInt(values.price);
-    console.log(values);
 
     // Thêm sản phẩm
     axios
@@ -70,7 +68,6 @@ const AddProduct = ({ categories }) => {
       .catch((err) => {
         setError(err.response.data);
         openNotificationWithIcon("error");
-        console.log(err.response.data.message);
       });
   };
   return (
@@ -120,7 +117,6 @@ const AddProduct = ({ categories }) => {
               {
                 validator: (_, value) => {
                   let length = 2;
-                  console.log(value.length);
                   if (value.length < 0) {
                     return Promise.reject(new Error("Vui lòng nhập giá"));
                   } else if (/\D/.test(value)) {
