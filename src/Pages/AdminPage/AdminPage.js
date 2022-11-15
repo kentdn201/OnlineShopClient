@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Layout, Table, Breadcrumb, Space } from "antd";
+import { Layout, Table, Breadcrumb, Space, Button, Modal, notification } from "antd";
 import CurrentHeaderContext from "../../Share/Contexts/CurrentHeaderContext";
 import { Content } from "antd/lib/layout/layout";
 import { Link } from "react-router-dom";
@@ -16,7 +16,6 @@ const AdminPage = () => {
   useEffect(() => {
     setLoading(true)
     axios.get(`${ProductApiURL.productsURL}`).then((response) => {
-      console.log("useEffect")
       setListProduct(response.data);
       setLoading(false);
       document.title = "Admin / Danh Sách Sản Phẩm";
@@ -54,16 +53,77 @@ const AdminPage = () => {
   {
     title: 'Action',
     key: 'action',
-    render: (_) => (
+    render: (_, data) => (
       <Space size="middle">
-        <Link to={"/admin"}>Xóa</Link>
-      </Space>
+          <Button
+            type="link"
+            onClick={(e) => {
+              Modal.confirm({
+                className: "FormNotification btn-left has-header centered",
+                centered: true,
+                title: "Bạn Có Chắc?",
+                content: "Bạn Có Muốn Xóa Danh Mục Này Không",
+                okText: "Có",
+                icon: null,
+                cancelText: "Không",
+                okButtonProps: {
+                  type: "primary",
+
+                  danger: true,
+                  style: {
+                    marginRight: "15px",
+                    float: "left",
+                    borderRadius: "5px",
+                    marginLeft: "auto",
+                    backgroundColor: "#CF2338",
+                    color: "white",
+                  },
+                },
+                cancelButtonProps: {
+                  style: {
+                    borderRadius: "5px",
+                    marginRight: "5px",
+                  },
+                },
+
+                onOk: () => {
+                  axios
+                    .delete(`${ProductApiURL.productDelete}/${data.slug}`, {
+                      slug: data.slug,
+                    })
+                    .then((response) => {
+                      notification["success"]({
+                        message: `${response.data.message}`,
+                      });
+                      
+                      var id = data.id
+                      if(response.data.message === `Xóa Thành Công Sản Phẩm: ${data.name}`)
+                      {
+                        const itemToRemove = listProduct.filter((item) => {
+                          return item.id !== id;
+                        });
+                        setListProduct(itemToRemove)
+                      }
+                    })
+                    .catch((err) => {
+                      notification["error"]({
+                        message: `${err.response.data.message}`,
+                      });
+                    });
+                },
+              });
+            }}
+          >
+            Xóa
+          </Button>
+        </Space>
     ),
   },
   ];
 
   const data = listProduct.map((product, index) => (
     {
+      id: product.id,
       name: product.name,
       key: `product ${index}`,
       categoryId: product.categoryId,
@@ -71,8 +131,6 @@ const AdminPage = () => {
       slug: product.slug
     }
   ))
-
-  console.log(data);
 
 
   if (performance.getEntriesByType("navigation")[0].type) {

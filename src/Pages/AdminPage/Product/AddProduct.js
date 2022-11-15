@@ -86,7 +86,7 @@ const AddProduct = ({ categories }) => {
           }}
         >
           <Breadcrumb.Item>
-            <Link to={"/"}>Trang Chủ</Link>
+            <Link to={"/admin"}>Trang Chủ</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>Admin</Breadcrumb.Item>
           <Breadcrumb.Item>Thêm Sản Phẩm</Breadcrumb.Item>

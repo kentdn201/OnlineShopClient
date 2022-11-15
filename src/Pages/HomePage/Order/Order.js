@@ -1,10 +1,9 @@
-import { Space, Table, Tag } from "antd";
+import { Space, Table } from "antd";
 import { Link, useParams } from "react-router-dom";
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import OrderApiURL from "../../../Share/ApiURL/OrderApiURL";
 import moment from "moment";
-import ApiURL from "../../../Share/ApiURL/ApiURL";
 import CurrentHeaderContext from "../../../Share/Contexts/CurrentHeaderContext";
 
 const dateFormat = (date) => {

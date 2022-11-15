@@ -1,12 +1,11 @@
 import React, { useContext, useEffect } from "react";
-import { Button, Form, Input, Layout, Breadcrumb, Select, notification } from "antd";
+import { Button, Form, Input, Layout, Breadcrumb, notification } from "antd";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import CurrentHeaderContext from "../../../Share/Contexts/CurrentHeaderContext";
 import { Content } from "antd/lib/layout/layout";
-import TextArea from "antd/lib/input/TextArea";
 import axios from "axios";
 import { useState } from "react";
-import ProductApiURL from "../../../Share/ApiURL/ProductApiURL";
+import CategoryApiURL from "../../../Share/ApiURL/CategoryApiURL";
 const layout = {
   labelCol: {
     span: 6,
@@ -16,17 +15,14 @@ const layout = {
   },
 };
 
-const EditProduct = ({ categories }) => {
+const EditCategory = () => {
   const slug = useParams().slug;
   const { setCurrentHeader } = useContext(CurrentHeaderContext);
   const [error, setError] = useState("");
-  const [productEditPage, setProductEditPage] = useState({
+  const [categoryEditPage, setCategoryEditPage] = useState({
     name: "",
     slug: "",
-    description: "",
-    price: "",
-    categoryId: "",
-    imageURL: "",
+    image: "",
   });
   const [form] = Form.useForm();
 
@@ -34,7 +30,7 @@ const EditProduct = ({ categories }) => {
 
   const openNotificationWithIcon = (type) => {
     notification[type]({
-      message: "Edit Thất Bại",
+      message: "Edit Fail",
       description: "Vui lòng nhập lại thông tin",
     });
   };
@@ -47,17 +43,14 @@ const EditProduct = ({ categories }) => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/product/${slug}`)
+      .get(`${CategoryApiURL.categoryURL}/${slug}`)
       .then((response) => {
-        setProductEditPage(response.data);
+        setCategoryEditPage(response.data);
         document.title = `${response.data.name}`;
         form.setFieldsValue({
           name: response.data.name,
-          imageURL: response.data.imageURL,
+          image: response.data.image,
           slug: response.data.slug,
-          price: response.data.price,
-          description: response.data.description,
-          categoryId: response.data.categoryId
         });
       })
       .catch(() => {});
@@ -85,10 +78,11 @@ const EditProduct = ({ categories }) => {
   }
 
   const handleOnFinish = (values) => {
-    axios.put(`${ProductApiURL.productEdit}/${values.slug}`, values)
+    console.log(values);
+    axios.put(`${CategoryApiURL.categoryURLUpdate}/${values.slug}`, values)
     .then((response) => {
       openNotificationWithIconSuccess("success");
-      navigate("/admin");
+      navigate("/admin/category");
     })
     .catch((err) => {
       setError(err.response.data);
@@ -116,7 +110,7 @@ const EditProduct = ({ categories }) => {
             <Link to={"/admin"}>Trang Chủ</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>Admin</Breadcrumb.Item>
-          <Breadcrumb.Item>{productEditPage.name}</Breadcrumb.Item>
+          <Breadcrumb.Item>{categoryEditPage.name}</Breadcrumb.Item>
         </Breadcrumb>
         <Form
           {...layout}
@@ -126,13 +120,13 @@ const EditProduct = ({ categories }) => {
         >
           <Form.Item
             name="name"
-            label="Tên Sản Phẩm"
-            rules={rules("Tên Sản Phẩm", 5, 100)}
+            label="Tên Danh Mục"
+            rules={rules("Tên Danh Mục", 5, 100)}
           >
-            <Input placeholder="Nhập Tên Sản Phẩm" disabled />
+            <Input placeholder="Nhập Tên Danh Mục" disabled />
           </Form.Item>
           <Form.Item
-            name="imageURL"
+            name="image"
             label="Đường dẫn hình ảnh"
             rules={rules("Đường dẫn hình ảnh", 5, 50000)}
           >
@@ -142,65 +136,6 @@ const EditProduct = ({ categories }) => {
             <Input placeholder="Nhập Slug (Đường Dẫn Đến Sản Phẩm Trên URL) Của Sản Phẩm" disabled/>
           </Form.Item>
 
-          <Form.Item
-            name="price"
-            label="Giá"
-            rules={[
-              {
-                validator: (_, value) => {
-                  let length = 2;
-                  if (value.length < 0) {
-                    return Promise.reject(new Error("Vui lòng nhập giá"));
-                  } else if (/\D/.test(value)) {
-                    return Promise.reject(
-                      new Error("Vui lòng nhập số cho giá của sản phẩm")
-                    );
-                  } else if (value.length < length || value.length > 100) {
-                    return Promise.reject(
-                      new Error("Vui lòng nhập giá có từ 2 - 100 kí tự")
-                    );
-                  }
-                  return Promise.resolve();
-                },
-              },
-            ]}
-          >
-            <Input placeholder="Nhập Giá Của Sản Phẩm" />
-          </Form.Item>
-
-          <Form.Item
-            name="description"
-            label="Mô tả"
-            rules={rules("Mô tả", 5, 1000)}
-          >
-            <TextArea placeholder="Nhập Mô Tả Của Sản Phẩm" />
-          </Form.Item>
-
-          <Form.Item
-            name="categoryId"
-            label="Danh Mục"
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-          >
-            <Select
-              showSearch
-              placeholder="Chọn Danh Mục"
-              defaultValue={productEditPage.categoryId}
-              optionFilterProp="children"
-              filterOption={(input, option) =>
-                (option?.label ?? "")
-                  .toLowerCase()
-                  .includes(input.toLowerCase())
-              }
-              options={categories.map((category) => ({
-                value: category.id,
-                label: category.name,
-              }))}
-            />
-          </Form.Item>
           <Form.Item
             wrapperCol={{
               ...layout.wrapperCol,
@@ -217,7 +152,7 @@ const EditProduct = ({ categories }) => {
               )}
             </div>
             <Button type="primary" htmlType="submit">
-              Sửa sản phẩm
+              Sửa Danh Mục
             </Button>
           </Form.Item>
         </Form>
@@ -226,4 +161,4 @@ const EditProduct = ({ categories }) => {
   );
 };
 
-export default EditProduct;
+export default EditCategory;

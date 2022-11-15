@@ -1,14 +1,11 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import ApiURL from "../../../Share/ApiURL/ApiURL";
 import OrderApiURL from "../../../Share/ApiURL/OrderApiURL";
 import { Table } from "antd";
-import ProductApiURL from "../../../Share/ApiURL/ProductApiURL";
 import GetImageURL from "../GetOneProduct/GetImageURL";
 import GetName from "../GetOneProduct/GetName";
-
-const productList = [];
 
 const OrderDetail = () => {
   const [user, setUser] = useState();
@@ -39,7 +36,10 @@ const OrderDetail = () => {
   let columns = [];
   let data = [];
   let total;
-  let formatter;
+
+  const formatter = new Intl.NumberFormat("en-US", {
+    currency: "VND",
+  });
 
   if (order === undefined) {
   } else {
@@ -55,17 +55,12 @@ const OrderDetail = () => {
       return total + item.price * item.quantity;
     }, 0);
 
-    formatter = new Intl.NumberFormat("en-US", {
-      currency: "VND",
-    });
-
     columns = [
       {
         title: "Ảnh",
         dataIndex: "imageURL",
         key: "imageurl",
         render: (_, data) => {
-          console.log(data.productId);
           return <GetImageURL productId={data.productId} />;
         },
       },

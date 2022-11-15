@@ -4,7 +4,6 @@ import ApiURL from "../../../Share/ApiURL/ApiURL";
 import { Link } from "react-router-dom";
 
 const GetName = ({ productId }) => {
-  console.log(`${ApiURL.Api}/product/san-pham/${productId}`);
   const [product, setProduct] = useState({
     id: null,
     name: null,
@@ -14,10 +13,17 @@ const GetName = ({ productId }) => {
   useEffect(() => {
     axios
       .get(`${ApiURL.Api}/product/san-pham/${productId}`)
-      .then((response) => setProduct(response.data));
-  }, []);
+      .then((response) => {
+        setProduct(response.data);
+        console.log("ABC");
+      });
+  }, [productId]);
 
-  return <div><Link to={`/san-pham/${product.slug}`}>{product.name}</Link></div>;
+  return (
+    <div>
+      <Link to={`/san-pham/${product.slug}`}>{product.name}</Link>
+    </div>
+  );
 };
 
 export default GetName;

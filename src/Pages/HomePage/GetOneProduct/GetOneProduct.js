@@ -46,13 +46,12 @@ const GetOneProduct = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    if (product)
-      axios
-        .get(`http://localhost:8080/category/danh-muc/${categoryId}`)
-        .then((response) => {
-          setCategorySlug(response.data.slug);
-          setIsLoading(false);
-        });
+    axios
+      .get(`http://localhost:8080/category/danh-muc/${categoryId}`)
+      .then((response) => {
+        setCategorySlug(response.data.slug);
+        setIsLoading(false);
+      });
   }, [categoryId]);
 
   useEffect(() => {
@@ -96,7 +95,9 @@ const GetOneProduct = () => {
           <br />
           <br />
           <h2>Mô tả sản phẩm: {product.description}</h2>
-          <h4 style={{ marginTop: 10 }}>Giá: {formatter.format(product.price)} VNĐ</h4>
+          <h4 style={{ marginTop: 10 }}>
+            Giá: {formatter.format(product.price)} VNĐ
+          </h4>
           <input type="hidden" value={(product.quantity = 1)} />
           <Form>
             <Button
@@ -107,7 +108,7 @@ const GetOneProduct = () => {
                   (item) => product.id === item.id
                 );
                 if (tempstate.length > 0) {
-                  return setItems((prev => [...prev]));
+                  return setItems((prev) => [...prev]);
                 } else {
                   return setItems((prev) => [...prev, product]);
                 }

@@ -22,6 +22,9 @@ import Cart from "./Pages/HomePage/Cart/Cart";
 import Order from "./Pages/HomePage/Order/Order";
 import OrderDetail from "./Pages/HomePage/Order/OrderDetail";
 import OrderList from "./Pages/AdminPage/Order/OrderList";
+import EditProduct from "./Pages/AdminPage/Product/EditProduct";
+import ViewCategory from "./Pages/AdminPage/Category/ViewCategory";
+import EditCategory from "./Pages/AdminPage/Category/EditCategory";
 
 function App() {
   const cookies = new Cookies();
@@ -30,9 +33,8 @@ function App() {
   const [currentHeader, setCurrentHeader] = useState("Home");
   const tokenDecryption = cookies.get("token");
 
-  if(localStorage.getItem("cart") === null)
-  {
-    localStorage.setItem("cart", JSON.stringify([]))
+  if (localStorage.getItem("cart") === null) {
+    localStorage.setItem("cart", JSON.stringify([]));
   }
 
   useEffect(() => {
@@ -86,8 +88,11 @@ function App() {
                 <Route path="/product/search/" element={<Search />} />
                 <Route path="/product/search/:keyword" element={<Search />} />
                 <Route path="/cart" element={<Cart />} />
-                <Route path="/order/:id" element={<Order/>} />
-                <Route path="/don-hang/:orderid/:userid" element={<OrderDetail/>} />
+                <Route path="/order/:id" element={<Order />} />
+                <Route
+                  path="/don-hang/:orderid/:userid"
+                  element={<OrderDetail />}
+                />
                 {tokenDecryption === undefined ? (
                   <>
                     <Route path="/login" element={<Login />} />
@@ -107,12 +112,24 @@ function App() {
                       path="/admin/product/:slug"
                       element={<ViewProduct />}
                     />
+                    <Route
+                      path="/admin/product/:slug/edit"
+                      element={<EditProduct categories={categories} />}
+                    />
                     <Route path="/admin/category/" element={<CategoryList />} />
+                    <Route
+                      path="/admin/category/:slug"
+                      element={<ViewCategory />}
+                    />
+                    <Route
+                      path="/admin/category/:slug/edit"
+                      element={<EditCategory />}
+                    />
                     <Route
                       path="/admin/category/add"
                       element={<AddCategory />}
                     />
-                    <Route path="/admin/don-hang/" element={<OrderList/>}/>
+                    <Route path="/admin/don-hang/" element={<OrderList />} />
                   </>
                 ) : (
                   <></>
