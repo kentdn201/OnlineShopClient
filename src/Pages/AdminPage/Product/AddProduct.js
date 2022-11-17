@@ -22,6 +22,8 @@ const AddProduct = ({ categories }) => {
   const navigate = useNavigate();
   const addProductURL = "http://localhost:8080/product/add";
 
+  document.title = `Admin / Thêm Sản Phẩm`;
+
   const openNotificationWithIcon = (type) => {
     notification[type]({
       message: "Add Fail",

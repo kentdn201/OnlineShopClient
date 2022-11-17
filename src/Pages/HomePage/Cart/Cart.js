@@ -84,7 +84,6 @@ const Cart = () => {
 
   const onFinish = (values) => {
     values.productOrderDtos = cartItems;
-    console.log(`${OrderApiURL.addOrder}${userId}`);
     axios
       .post(`${OrderApiURL.addOrder}${userId}`, values)
       .then((response) => {
@@ -94,7 +93,6 @@ const Cart = () => {
       })
       .catch((err) => {
         setError(err.response.data);
-        console.log(err.response.data);
         openNotificationWithIcon("error");
       });
   };
@@ -279,7 +277,31 @@ const Cart = () => {
                     </Form.Item>
                     <Form.Item
                       name="phoneNumber"
-                      rules={rules("Số điện thoại", 10, 11)}
+                      rules={[
+                        {
+                          required: true,
+                          type: "regexp",
+                          pattern: new RegExp(/^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/),
+                          message: "Wrong format!"
+                        },
+                        {
+                          validator: (_, value) => {
+                            let length = 10;
+                            if (value.length < 0) {
+                              return Promise.reject(new Error("Vui lòng nhập số điện thoại"));
+                            } else if (/\D/.test(value)) {
+                              return Promise.reject(
+                                new Error("Vui lòng nhập số điện thoại")
+                              );
+                            } else if (value.length < length || value.length > 11) {
+                              return Promise.reject(
+                                new Error("Vui lòng nhập giá có từ 10 - 11 kí tự")
+                              );
+                            }
+                            return Promise.resolve();
+                          },
+                        },
+                      ]}
                     >
                       <Input placeholder="Vui lòng nhập số điện thoại" />
                     </Form.Item>

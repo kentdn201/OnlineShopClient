@@ -29,6 +29,8 @@ const AddCategory = () => {
   const navigate = useNavigate();
   const addCategoryURL = "http://localhost:8080/category/create";
 
+  document.title = `Admin / Thêm Một Danh Mục`;
+
   const openNotificationWithIcon = (type) => {
     notification[type]({
       message: "Add Fail",

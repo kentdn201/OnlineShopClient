@@ -15,7 +15,7 @@ const dateFormat = (date) => {
 const Order = () => {
   const [orderList, setOrderList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const {setCurrentHeader} = useContext(CurrentHeaderContext);
+  const { setCurrentHeader } = useContext(CurrentHeaderContext);
 
   const id = useParams().id;
 
@@ -47,9 +47,17 @@ const Order = () => {
             <>
               <div style={{ color: "red" }}>Chưa Giao Hàng</div>
             </>
-          ) : (
+          ) : status === "Delivery" ? (
+            <>
+              <div style={{ color: "orange" }}>Đang Giao Hàng</div>
+            </>
+          ) : status === "Done" ? (
             <>
               <div style={{ color: "green" }}> Đã Hoàn Thành Giao Hàng</div>
+            </>
+          ) : (
+            <>
+              <div style={{ color: "red" }}> Đã Hủy</div>
             </>
           )}
         </div>
@@ -60,9 +68,7 @@ const Order = () => {
       key: "action",
       render: (data) => (
         <Space size="middle">
-          <Link to={`/don-hang/${data.id}/${id}`}>
-            Xem chi tiết đơn hàng
-          </Link>
+          <Link to={`/don-hang/${data.id}/${id}`}>Xem chi tiết đơn hàng</Link>
         </Space>
       ),
     },

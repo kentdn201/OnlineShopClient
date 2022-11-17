@@ -25,6 +25,8 @@ import OrderList from "./Pages/AdminPage/Order/OrderList";
 import EditProduct from "./Pages/AdminPage/Product/EditProduct";
 import ViewCategory from "./Pages/AdminPage/Category/ViewCategory";
 import EditCategory from "./Pages/AdminPage/Category/EditCategory";
+import Signup from "./Pages/HomePage/Signup/Signup";
+import OrderDetailAdmin from "./Pages/AdminPage/Order/OrderDetailAdmin";
 
 function App() {
   const cookies = new Cookies();
@@ -96,6 +98,7 @@ function App() {
                 {tokenDecryption === undefined ? (
                   <>
                     <Route path="/login" element={<Login />} />
+                    <Route path="/dang-ky" element={<Signup />} />
                   </>
                 ) : (
                   <></>
@@ -130,6 +133,10 @@ function App() {
                       element={<AddCategory />}
                     />
                     <Route path="/admin/don-hang/" element={<OrderList />} />
+                    <Route
+                      path="/admin/don-hang/:orderid/:userid"
+                      element={<OrderDetailAdmin />}
+                    />
                   </>
                 ) : (
                   <></>

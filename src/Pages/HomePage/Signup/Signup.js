@@ -2,30 +2,24 @@ import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Form, Input } from "antd";
 import axios from "axios";
 import React, { useState } from "react";
-import { useCookies } from "react-cookie";
 import { Link } from "react-router-dom";
 import Title from "../../../Components/Title/Title";
-import "../../../css/Login/Login.css";
 
-const Login = () => {
-  sessionStorage.setItem("key", 1);
-  const [cookies, setCookie] = useCookies(["user"]);
+const Signup = () => {
   const [error, setError] = useState("");
 
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
 
     axios
-      .post(`http://localhost:8080/user/signin`, {
+      .post(`http://localhost:8080/user/signup`, {
+        firstName: values.firstName,
+        lastName: values.lastName,
         email: values.email,
         password: values.password,
       })
       .then((response) => {
-        setCookie("token", response.data, {
-          maxAge: 7 * 24 * 60 * 60,
-        });
-        window.location.replace("/");
-        sessionStorage.setItem("key", 1);
+        window.location.replace("/login");
       })
       .catch((error) => {
         console.log(error.response.data);
@@ -46,7 +40,39 @@ const Login = () => {
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
     >
-      <Title title={"Login"} />
+      <Title title={"Đăng Ký"} />
+      <Form.Item
+        name="firstName"
+        rules={[
+          {
+            required: true,
+            message: "Vui lòng nhập firstName",
+          },
+        ]}
+        onChange={() => setError("")}
+      >
+        <Input
+          prefix={<UserOutlined className="site-form-item-icon" />}
+          type="text"
+          placeholder="First name"
+        />
+      </Form.Item>
+      <Form.Item
+        name="lastName"
+        rules={[
+          {
+            required: true,
+            message: "Vui lòng last name!",
+          },
+        ]}
+        onChange={() => setError("")}
+      >
+        <Input
+          prefix={<UserOutlined className="site-form-item-icon" />}
+          type="text"
+          placeholder="Last name"
+        />
+      </Form.Item>
       <Form.Item
         name="email"
         rules={[
@@ -81,26 +107,22 @@ const Login = () => {
       </Form.Item>
 
       <Form.Item>
-      <div>
-          {error === "Tài khoản không có trong hệ thống" ? (
+        <div>
+          {error === "Tài khoản đã tồn tại" ? (
             <p style={{ color: "#CF2338" }}>
-              Tài khoản bạn nhập không tồn tại vui lòng đăng nhập bằng tài khoản khác
-            </p>
-          ) : error === "Sai tài khoản hoặc mật khẩu" ? (
-            <p style={{ color: "#CF2338" }}>
-              Sai tài khoản hoặc mật khẩu vui lòng nhập lại
+              Tài khoản bạn đăng ký đã tồn tại trong hệ thống!!
             </p>
           ) : (
             <></>
           )}
         </div>
         <Button type="primary" htmlType="submit" className="login-form-button">
-          Đăng Nhập
+          Đăng Ký
         </Button>
-        Hoặc <Link to={"/dang-ky"}>Đăng Ký Tài Khoản</Link>
+        Hoặc <Link to={"/login"}>Đã Có Tài Khoản</Link>
       </Form.Item>
     </Form>
   );
 };
 
-export default Login;
+export default Signup;

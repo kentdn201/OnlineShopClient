@@ -15,7 +15,6 @@ const GetName = ({ productId }) => {
       .get(`${ApiURL.Api}/product/san-pham/${productId}`)
       .then((response) => {
         setProduct(response.data);
-        console.log("ABC");
       });
   }, [productId]);
 

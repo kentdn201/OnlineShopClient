@@ -94,7 +94,6 @@ const EditProduct = ({ categories }) => {
       setError(err.response.data);
       openNotificationWithIcon("error");
     });
-
   };
 
   return (

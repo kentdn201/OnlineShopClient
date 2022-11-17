@@ -132,11 +132,22 @@ const OrderDetail = () => {
                 <h3>Email: {user.email}</h3>
                 <h3>Kiểu Thanh Toán: {order.typePayment}</h3>
                 <h3>
-                  Tình Trạng Đơn Hàng:{" "}
                   {order.orderStatus === "NotDelivery" ? (
-                    <>Chưa Giao Hàng</>
+                    <>
+                      <p style={{ color: "red" }}>Tình Trạng Đơn Hàng: Chưa Giao Hàng</p>
+                    </>
+                  ) : order.orderStatus === "Delivery" ? (
+                    <>
+                      <p style={{ color: "orange" }}>Tình Trạng Đơn Hàng: Đang Giao Hàng</p>
+                    </>
+                  ) : order.orderStatus === "Done" ? (
+                    <>
+                      <p style={{ color: "green" }}>Tình Trạng Đơn Hàng: Đã Hoàn Thành Giao Hàng</p>
+                    </>
                   ) : (
-                    <>Đã Giao Hàng</>
+                    <>
+                      <p style={{ color: "red" }}>Tình Trạng Đơn Hàng: Đã Hủy</p>
+                    </>
                   )}
                 </h3>
 

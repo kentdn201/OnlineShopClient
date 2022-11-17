@@ -18,13 +18,12 @@ const OrderList = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { setCurrentHeader } = useContext(CurrentHeaderContext);
 
-  console.log(`${OrderApiURL.allOrder}`);
-
   useEffect(() => {
     setIsLoading(true);
     axios.get(`${OrderApiURL.allOrder}`).then((response) => {
       setIsLoading(false);
       setOrderList(response.data);
+      document.title = `Admin / Danh Sách Đơn Hàng`;
     });
   }, []);
 
@@ -48,9 +47,13 @@ const OrderList = () => {
             <>
               <div style={{ color: "red" }}>Chưa Giao Hàng</div>
             </>
+          ) : status === "Delivery" ? (
+            <><div style={{ color: "orange" }}>Đang Giao Hàng</div></>
+          ) : status === "Done" ? (
+            <><div style={{ color: "green" }}> Đã Hoàn Thành Giao Hàng</div></>
           ) : (
             <>
-              <div style={{ color: "green" }}> Đã Hoàn Thành Giao Hàng</div>
+              <div style={{ color: "red" }}> Đã Hủy</div>
             </>
           )}
         </div>
@@ -61,7 +64,7 @@ const OrderList = () => {
       key: "action",
       render: (data) => (
         <Space size="middle">
-          <Link to={`/don-hang/${data}`}>Xem chi tiết đơn hàng</Link>
+          <Link to={`/admin/don-hang/${data.id}/${data.userId}`}>Xem chi tiết đơn hàng</Link>
         </Space>
       ),
     },
@@ -69,6 +72,7 @@ const OrderList = () => {
 
   const data = orderList.map((order, index) => ({
     id: order.id,
+    userId: order.userId,
     createDate: order.createDate,
     orderStatus: order.orderStatus,
     key: `order ${index}`,
@@ -102,7 +106,7 @@ const OrderList = () => {
                 <Breadcrumb.Item>Admin</Breadcrumb.Item>
                 <Breadcrumb.Item>Danh Sách Sản Phẩm</Breadcrumb.Item>
               </Breadcrumb>
-              <Table columns={columns} loading={isLoading} dataSource={data} />;
+              <Table columns={columns} loading={isLoading} dataSource={data} />
             </Content>
           </Layout>
         </>
