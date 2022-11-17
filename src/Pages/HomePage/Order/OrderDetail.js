@@ -6,9 +6,12 @@ import OrderApiURL from "../../../Share/ApiURL/OrderApiURL";
 import { Table } from "antd";
 import GetImageURL from "../GetOneProduct/GetImageURL";
 import GetName from "../GetOneProduct/GetName";
+import { useContext } from "react";
+import CurrentUserContext from "../../../Share/Contexts/CurrentUserContext";
 
 const OrderDetail = () => {
   const [user, setUser] = useState();
+  const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
   const [order, setOrder] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -49,6 +52,7 @@ const OrderDetail = () => {
       productId: order.productId,
       quantity: order.quantity,
       price: order.price,
+      userId: order.userId,
     }));
 
     total = order.orderProductDtos.reduce((total, item) => {
@@ -68,7 +72,6 @@ const OrderDetail = () => {
         title: "Tên",
         dataIndex: "name",
         key: "name",
-        sorter: (a, b) => a.name.length - b.name.length,
         render: (_, data) => {
           return <GetName productId={data.productId} />;
         },
@@ -108,14 +111,6 @@ const OrderDetail = () => {
         <></>
       ) : (
         <>
-          <h2
-            style={{
-              textAlign: "center",
-              padding: 10,
-            }}
-          >
-            Chi tiết đơn hàng
-          </h2>
           <div
             style={{
               margin: "0 64px",
@@ -123,8 +118,28 @@ const OrderDetail = () => {
           >
             {order === undefined ? (
               <></>
+            ) : currentUser.role === "User" && currentUser.id !== order.userId ? (
+              <>
+                {" "}
+                <h2
+                  style={{
+                    textAlign: "center",
+                    padding: 200,
+                  }}
+                >
+                  Bạn không thể truy cập vào đơn hàng này
+                </h2>
+              </>
             ) : (
               <>
+                <h2
+                  style={{
+                    textAlign: "center",
+                    padding: 10,
+                  }}
+                >
+                  Chi tiết đơn hàng
+                </h2>
                 <h3>Người Nhận: {user.lastName + " " + user.firstName}</h3>
                 <h3>Số Điện Thoại: {order.phoneNumber}</h3>
                 <h3>Địa Chỉ: {order.address}</h3>
@@ -134,19 +149,27 @@ const OrderDetail = () => {
                 <h3>
                   {order.orderStatus === "NotDelivery" ? (
                     <>
-                      <p style={{ color: "red" }}>Tình Trạng Đơn Hàng: Chưa Giao Hàng</p>
+                      <p style={{ color: "red" }}>
+                        Tình Trạng Đơn Hàng: Chưa Giao Hàng
+                      </p>
                     </>
                   ) : order.orderStatus === "Delivery" ? (
                     <>
-                      <p style={{ color: "orange" }}>Tình Trạng Đơn Hàng: Đang Giao Hàng</p>
+                      <p style={{ color: "orange" }}>
+                        Tình Trạng Đơn Hàng: Đang Giao Hàng
+                      </p>
                     </>
                   ) : order.orderStatus === "Done" ? (
                     <>
-                      <p style={{ color: "green" }}>Tình Trạng Đơn Hàng: Đã Hoàn Thành Giao Hàng</p>
+                      <p style={{ color: "green" }}>
+                        Tình Trạng Đơn Hàng: Đã Hoàn Thành Giao Hàng
+                      </p>
                     </>
                   ) : (
                     <>
-                      <p style={{ color: "red" }}>Tình Trạng Đơn Hàng: Đã Hủy</p>
+                      <p style={{ color: "red" }}>
+                        Tình Trạng Đơn Hàng: Đã Hủy
+                      </p>
                     </>
                   )}
                 </h3>

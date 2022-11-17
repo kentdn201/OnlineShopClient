@@ -94,7 +94,7 @@ const AddCategory = () => {
           }}
         >
           <Breadcrumb.Item>
-            <Link to={"/"}>Trang Chủ</Link>
+            <Link to={"/admin"}>Trang Chủ</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>Admin</Breadcrumb.Item>
           <Breadcrumb.Item>Thêm Danh Mục</Breadcrumb.Item>

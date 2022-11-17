@@ -19,6 +19,8 @@ const Order = () => {
 
   const id = useParams().id;
 
+  document.title = `Danh Sách Đơn Hàng`;
+
   useEffect(() => {
     setIsLoading(true);
     axios.get(`${OrderApiURL.getAllOrderByUser}${id}`).then((response) => {

@@ -97,7 +97,6 @@ const OrderDetailAdmin = () => {
         title: "Tên",
         dataIndex: "name",
         key: "name",
-        sorter: (a, b) => a.name.length - b.name.length,
         render: (_, data) => {
           return <GetName productId={data.productId} />;
         },

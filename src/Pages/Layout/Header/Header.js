@@ -17,7 +17,6 @@ const linkCss = {
   fontSize: 16,
 };
 
-
 const HeaderAsset = () => {
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
   const length = cart.length;
@@ -33,14 +32,13 @@ const HeaderAsset = () => {
 
   useEffect(() => {
     setCount(length);
-  }, [length])
+  }, [length]);
 
   useEffect(() => {
-    if(length === 0)
-    {
-      localStorage.setItem("cart", JSON.stringify(cart))
+    if (length === 0) {
+      localStorage.setItem("cart", JSON.stringify(cart));
     }
-  })
+  });
 
   const navigate = useNavigate();
 
@@ -56,7 +54,7 @@ const HeaderAsset = () => {
     setCurrentUser({});
     cookies.remove("token");
     sessionStorage.removeItem("key");
-    localStorage.removeItem("cart")
+    localStorage.removeItem("cart");
     window.location.replace("/");
     setCurrentHeader("Home");
   };
@@ -144,7 +142,10 @@ const HeaderAsset = () => {
             margin: 16,
           }}
           value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
+          onChange={(e) => {
+            setKeyword(e.target.value);
+            document.title = `${e.target.value}`;
+          }}
           onSearch={handleFinish}
         />
       </Header>

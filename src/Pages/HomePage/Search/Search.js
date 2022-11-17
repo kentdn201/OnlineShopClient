@@ -11,6 +11,8 @@ const Search = () => {
   if (keyword === undefined) {
     keyword = "";
   }
+  
+  
 
   const [searchProducts, setSearchProduct] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -20,6 +22,7 @@ const Search = () => {
     axios.get(`${ProductApiURL.productsSearch}${keyword}`).then((response) => {
       setSearchProduct(response.data);
       setIsLoading(false);
+      document.title = `Tìm kiếm: ${keyword}`;
     });
   }, [keyword]);
 

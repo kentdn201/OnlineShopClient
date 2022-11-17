@@ -42,6 +42,8 @@ const rules = (name, min, max) => [
   },
 ];
 
+document.title = `Giỏ Hàng`;
+
 const Cart = () => {
   const { setCurrentHeader } = useContext(CurrentHeaderContext);
   if (performance.getEntriesByType("navigation")[0].type) {
