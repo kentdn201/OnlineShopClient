@@ -8,6 +8,16 @@ const SideBar = () => {
   const Items = [
     {
       key: "1",
+      label: "Quản Lý Người Dùng",
+      children: [
+        {
+          key: "child-order-1",
+          label: <Link to={"/admin/nguoi-dung"}>Danh Sách Người Dùng</Link>,
+        },
+      ],
+    },
+    {
+      key: "2",
       label: "Sản Phẩm",
       children: [
         {
@@ -21,7 +31,7 @@ const SideBar = () => {
       ],
     },
     {
-      key: "2",
+      key: "3",
       label: "Danh Mục",
       children: [
         {
@@ -35,7 +45,7 @@ const SideBar = () => {
       ],
     },
     {
-      key: "3",
+      key: "4",
       label: "Đơn Đặt Hàng",
       children: [
         {

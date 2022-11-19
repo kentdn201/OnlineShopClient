@@ -81,10 +81,11 @@ const Login = () => {
       </Form.Item>
 
       <Form.Item>
-      <div>
+        <div>
           {error === "Tài khoản không có trong hệ thống" ? (
             <p style={{ color: "#CF2338" }}>
-              Tài khoản bạn nhập không tồn tại vui lòng đăng nhập bằng tài khoản khác
+              Tài khoản bạn nhập không tồn tại vui lòng đăng nhập bằng tài khoản
+              khác
             </p>
           ) : error === "Sai tài khoản hoặc mật khẩu" ? (
             <p style={{ color: "#CF2338" }}>

@@ -27,6 +27,9 @@ import ViewCategory from "./Pages/AdminPage/Category/ViewCategory";
 import EditCategory from "./Pages/AdminPage/Category/EditCategory";
 import Signup from "./Pages/HomePage/Signup/Signup";
 import OrderDetailAdmin from "./Pages/AdminPage/Order/OrderDetailAdmin";
+import UserList from "./Pages/AdminPage/User/UserList";
+import ViewUser from "./Pages/AdminPage/User/ViewUser";
+import { notification } from "antd";
 
 function App() {
   const cookies = new Cookies();
@@ -38,6 +41,14 @@ function App() {
   if (localStorage.getItem("cart") === null) {
     localStorage.setItem("cart", JSON.stringify([]));
   }
+
+  const openNotificationWithIcon = (type) => {
+    notification[type]({
+      message: "Đăng nhập thất bại",
+      description:
+        "Tài Khoản Của Bạn Đã Bị Vô Hiệu Hóa Vui Lòng Liên Hệ Admin Để Biết Thêm Thông Tin Chi Tiết",
+    });
+  };
 
   useEffect(() => {
     if (tokenDecryption === undefined) {
@@ -57,6 +68,15 @@ function App() {
       setCategorise(response.data);
     });
   }, []);
+
+  if (currentUser.userStatus === "Disabled") {
+    openNotificationWithIcon("error");
+    setCurrentUser({});
+    cookies.remove("token");
+    sessionStorage.removeItem("key");
+    localStorage.removeItem("cart");
+    setCurrentHeader("Home");
+  }
 
   return (
     <div className="main">
@@ -107,6 +127,11 @@ function App() {
                   <>
                     {/* For admin only */}
                     <Route path="/admin" element={<AdminPage />} />
+                    <Route path="/admin/nguoi-dung" element={<UserList />} />
+                    <Route
+                      path="/admin/nguoi-dung/:userId"
+                      element={<ViewUser />}
+                    />
                     <Route
                       path="/admin/product/add"
                       element={<AddProduct categories={categories} />}
