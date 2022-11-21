@@ -5,7 +5,6 @@ import {
   Input,
   Layout,
   Breadcrumb,
-  Select,
   notification,
 } from "antd";
 import { Link, useNavigate } from "react-router-dom";
@@ -49,6 +48,9 @@ const AddCategory = () => {
       validator: (_, value) => {
         const lengthMin = min;
         const lengthMax = max;
+        if (value === undefined) {
+          value = "";
+        }
         if (value <= 0) {
           return Promise.reject(new Error(`Vui lòng nhập lại ${name}`));
         } else if (value.length < lengthMin || value.length > lengthMax) {

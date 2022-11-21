@@ -23,6 +23,10 @@ const ViewProduct = () => {
 
   const slug = useParams().slug;
 
+  const formatter = new Intl.NumberFormat("en-US", {
+    currency: "VND",
+  });
+
   useEffect(() => {
     axios.get(`http://localhost:8080/product/${slug}`).then((response) => {
       setProduct(response.data);
@@ -64,14 +68,14 @@ const ViewProduct = () => {
             {product.name}
           </Form.Item>
           <Form.Item name="imageURL" label="Đường dẫn hình ảnh">
-            <img src={product.imageURL} width={200} style={{ margin: 10 }} />
+            <img src={product.imageURL} alt={product.name} width={200} style={{ margin: 10 }} />
           </Form.Item>
           <Form.Item name="slug" label="Slug">
             {product.slug}
           </Form.Item>
 
           <Form.Item name="price" label="Giá">
-            {product.price}
+            {formatter.format(product.price)} VNĐ
           </Form.Item>
 
           <Form.Item name="description" label="Mô tả">

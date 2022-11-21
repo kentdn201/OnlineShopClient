@@ -1,5 +1,14 @@
 import React, { useContext } from "react";
-import { Button, Form, Input, Layout, Breadcrumb, Select, notification } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  Layout,
+  Breadcrumb,
+  Select,
+  notification,
+  InputNumber,
+} from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import CurrentHeaderContext from "../../../Share/Contexts/CurrentHeaderContext";
 import { Content } from "antd/lib/layout/layout";
@@ -42,7 +51,10 @@ const AddProduct = ({ categories }) => {
       validator: (_, value) => {
         const lengthMin = min;
         const lengthMax = max;
-        if (value <= 0) {
+        if (value === undefined) {
+          value = "";
+        }
+        if (value.length <= 0) {
           return Promise.reject(new Error(`Vui lòng nhập ${name}`));
         } else if (value.length < lengthMin || value.length > lengthMax) {
           return Promise.reject(
@@ -108,7 +120,7 @@ const AddProduct = ({ categories }) => {
           >
             <Input placeholder="Nhập Đường Dẫn Hình Ảnh" />
           </Form.Item>
-          <Form.Item name="slug" label="Slug" rules={rules("Slug", 3, 100)}>
+          <Form.Item name="slug" label="Slug" rules={rules("Slug", 5, 100)}>
             <Input placeholder="Nhập Slug (Đường Dẫn Đến Sản Phẩm Trên URL) Của Sản Phẩm" />
           </Form.Item>
 
@@ -118,16 +130,18 @@ const AddProduct = ({ categories }) => {
             rules={[
               {
                 validator: (_, value) => {
-                  let length = 2;
-                  if (value.length < 0) {
+                  // let length = 2;
+                  if (value === undefined) {
+                    value = "";
+                  }
+                  if (value === null) {
+                    value = "";
+                  }
+                  if (value.length <= 0) {
                     return Promise.reject(new Error("Vui lòng nhập giá"));
-                  } else if (/\D/.test(value)) {
+                  } else if (value < 100 || value > 100000000000000) {
                     return Promise.reject(
-                      new Error("Vui lòng nhập số cho giá của sản phẩm")
-                    );
-                  } else if (value.length < length || value.length > 100) {
-                    return Promise.reject(
-                      new Error("Vui lòng nhập giá có từ 2 - 100 kí tự")
+                      new Error("Vui lòng nhập giá có từ 2 - 14 kí tự")
                     );
                   }
                   return Promise.resolve();
@@ -135,13 +149,21 @@ const AddProduct = ({ categories }) => {
               },
             ]}
           >
-            <Input placeholder="Nhập Giá Của Sản Phẩm" />
+            <InputNumber
+              style={{
+                width: "100%",
+              }}
+              formatter={(value) =>
+                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              }
+              placeholder="Nhập Giá Của Sản Phẩm"
+            />
           </Form.Item>
 
           <Form.Item
             name="description"
             label="Mô tả"
-            rules={rules("Mô tả", 5, 1000)}
+            rules={rules("Mô tả sản phẩm", 5, 100)}
           >
             <TextArea placeholder="Nhập Mô Tả Của Sản Phẩm" />
           </Form.Item>
@@ -152,6 +174,7 @@ const AddProduct = ({ categories }) => {
             rules={[
               {
                 required: true,
+                message: "Vui lòng chọn danh mục!",
               },
             ]}
           >
@@ -177,14 +200,14 @@ const AddProduct = ({ categories }) => {
             }}
           >
             <div>
-            {error.message === "Slug này đã tồn tại trong hệ thống" ? (
-              <p style={{ color: "#CF2338" }}>
-                Slug này đã tồn tại trong hệ thống
-              </p>
-            ) : (
-              <></>
-            )}
-          </div>
+              {error.message === "Slug này đã tồn tại trong hệ thống" ? (
+                <p style={{ color: "#CF2338" }}>
+                  Slug này đã tồn tại trong hệ thống
+                </p>
+              ) : (
+                <></>
+              )}
+            </div>
             <Button type="primary" htmlType="submit">
               Thêm Mới
             </Button>
