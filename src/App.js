@@ -4,7 +4,7 @@ import "antd/dist/antd.min.css";
 import GetOneProduct from "./Pages/HomePage/GetOneProduct/GetOneProduct";
 import HeaderAsset from "./Pages/Layout/Header/Header";
 import Category from "./Pages/Layout/Category/Category";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { Cookies, CookiesProvider } from "react-cookie";
 import GetProductsByCategory from "./Pages/HomePage/Category/GetProductsByCategory";
@@ -30,11 +30,16 @@ import OrderDetailAdmin from "./Pages/AdminPage/Order/OrderDetailAdmin";
 import UserList from "./Pages/AdminPage/User/UserList";
 import ViewUser from "./Pages/AdminPage/User/ViewUser";
 import { notification } from "antd";
+import ApiLogin from "./Share/ApiURL/ApiLogin";
 
 function App() {
   const cookies = new Cookies();
   const [categories, setCategorise] = useState([]);
-  const [currentUser, setCurrentUser] = useState({});
+  const [currentUser, setCurrentUser] = useState({
+    roles: [],
+    email: null,
+    lastName: null,
+  });
   const [currentHeader, setCurrentHeader] = useState("Home");
   const tokenDecryption = cookies.get("token");
 
@@ -50,13 +55,22 @@ function App() {
     });
   };
 
+  const header = `Authorization: Bearer ${tokenDecryption}`;
+
   useEffect(() => {
     if (tokenDecryption === undefined) {
-      setCurrentUser({});
+      setCurrentUser({
+        roles: [],
+        email: null,
+        lastName: null,
+      });
       setCurrentHeader("Home");
     } else {
+      axios.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${tokenDecryption}`;
       axios
-        .get(`http://localhost:8080/user/${tokenDecryption.message}/get`)
+        .get(`${ApiLogin.getUserUrl}`, { headers: { header } })
         .then((response) => {
           setCurrentUser(response.data);
         });
@@ -123,7 +137,8 @@ function App() {
                 ) : (
                   <></>
                 )}
-                {currentUser.role === "Admin" ? (
+                {currentUser.roles.length > 1 &&
+                currentUser.roles.find((e) => e.roleCode === "ADMIN") ? (
                   <>
                     {/* For admin only */}
                     <Route path="/admin" element={<AdminPage />} />

@@ -2,7 +2,7 @@ import { createContext } from "react";
 
 const CurrentUserContext = createContext({
     id: null,
-    role: null,
+    roles: null,
     email: null,
     firstName : null,
     lastName: null

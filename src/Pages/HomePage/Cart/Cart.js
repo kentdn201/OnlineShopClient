@@ -56,6 +56,8 @@ const Cart = () => {
 
   const userId = currentUser.id;
 
+  console.log(userId);
+
   const [cartItems, setCartItems] = useState(
     JSON.parse(localStorage.getItem("cart") ?? [])
   );
@@ -74,7 +76,7 @@ const Cart = () => {
   const openNotificationWithIcon = (type) => {
     notification[type]({
       message: "Đặt hàng thất bại",
-      description: "Vui lòng điện lại thông tin",
+      description: error,
     });
   };
 
@@ -86,6 +88,7 @@ const Cart = () => {
 
   const onFinish = (values) => {
     values.productOrderDtos = cartItems;
+    console.log(values);
     axios
       .post(`${OrderApiURL.addOrder}${userId}`, values)
       .then((response) => {
@@ -228,7 +231,7 @@ const Cart = () => {
       >
         Giỏ Hàng
       </h2>
-      {currentUser.role === undefined ? (
+      {currentUser.roles.length < 1 ? (
         <>
           <h2
             style={{

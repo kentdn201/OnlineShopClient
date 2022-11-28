@@ -1,5 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Layout, Table, Breadcrumb, Space, Button, Modal, notification } from "antd";
+import {
+  Layout,
+  Table,
+  Breadcrumb,
+  Space,
+  Button,
+  Modal,
+  notification,
+} from "antd";
 import CurrentHeaderContext from "../../Share/Contexts/CurrentHeaderContext";
 import { Content } from "antd/lib/layout/layout";
 import { Link } from "react-router-dom";
@@ -14,21 +22,23 @@ const AdminPage = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setLoading(true)
+    setLoading(true);
     axios.get(`${ProductApiURL.productsURL}`).then((response) => {
       setListProduct(response.data);
       setLoading(false);
       document.title = "Admin / Danh Sách Sản Phẩm";
     });
   }, []);
- 
+
   const columns = [
     {
       title: "Ảnh",
       dataIndex: "imageurl",
       key: "imageurl",
       render: (_, data) => {
-        return(<img style={{maxWidth:100}} alt={data.name} src={data.imageurl}/>)
+        return (
+          <img style={{ maxWidth: 100 }} alt={data.name} src={data.imageurl} />
+        );
       },
     },
     {
@@ -37,7 +47,7 @@ const AdminPage = () => {
       key: "name",
       sorter: (a, b) => a.name.length - b.name.length,
       render: (_, data) => {
-        return(<Link to={`/admin/product/${data.slug}`}>{data.name}</Link>)
+        return <Link to={`/admin/product/${data.slug}`}>{data.name}</Link>;
       },
     },
     {
@@ -46,15 +56,15 @@ const AdminPage = () => {
       key: "category",
       sorter: (a, b) => a.categoryId - b.categoryId,
       render: (_, data) => {
-        return(<CategoryName categoryId={data.categoryId}/>)
-      }
+        return <CategoryName categoryId={data.categoryId} />;
+      },
     },
-    
-  {
-    title: 'Action',
-    key: 'action',
-    render: (_, data) => (
-      <Space size="middle">
+
+    {
+      title: "Action",
+      key: "action",
+      render: (_, data) => (
+        <Space size="middle">
           <Button
             type="link"
             onClick={(e) => {
@@ -95,14 +105,16 @@ const AdminPage = () => {
                       notification["success"]({
                         message: `${response.data.message}`,
                       });
-                      
-                      var id = data.id
-                      if(response.data.message === `Xóa Thành Công Sản Phẩm: ${data.name}`)
-                      {
+
+                      var id = data.id;
+                      if (
+                        response.data.message ===
+                        `Xóa Thành Công Sản Phẩm: ${data.name}`
+                      ) {
                         const itemToRemove = listProduct.filter((item) => {
                           return item.id !== id;
                         });
-                        setListProduct(itemToRemove)
+                        setListProduct(itemToRemove);
                       }
                     })
                     .catch((err) => {
@@ -117,21 +129,18 @@ const AdminPage = () => {
             Xóa
           </Button>
         </Space>
-    ),
-  },
+      ),
+    },
   ];
 
-  const data = listProduct.map((product, index) => (
-    {
-      id: product.id,
-      name: product.name,
-      key: `product ${index}`,
-      categoryId: product.categoryId,
-      imageurl: product.imageURL,
-      slug: product.slug
-    }
-  ))
-
+  const data = listProduct.map((product, index) => ({
+    id: product.id,
+    name: product.name,
+    key: `product ${index}`,
+    categoryId: product.categoryId,
+    imageurl: product.imageURL,
+    slug: product.slug,
+  }));
 
   if (performance.getEntriesByType("navigation")[0].type) {
     setCurrentHeader("Admin");
@@ -157,7 +166,7 @@ const AdminPage = () => {
           <Breadcrumb.Item>Admin</Breadcrumb.Item>
           <Breadcrumb.Item>Danh Sách Sản Phẩm</Breadcrumb.Item>
         </Breadcrumb>
-        <Table columns={columns} loading={loading} dataSource={data}  />
+        <Table columns={columns} loading={loading} dataSource={data} />
       </Content>
     </Layout>
   );

@@ -90,16 +90,15 @@ const HeaderAsset = () => {
     },
   ];
 
-  const userMenu =
-    currentUser.role === "Admin" ? (
-      <>
-        <Menu items={dropDownAdmin} />
-      </>
-    ) : (
-      <>
-        <Menu items={dropDownUser} />
-      </>
-    );
+  const userMenu = currentUser.roles.find((e) => e.roleCode === "ADMIN") ? (
+    <>
+      <Menu items={dropDownAdmin} />
+    </>
+  ) : (
+    <>
+      <Menu items={dropDownUser} />
+    </>
+  );
 
   const handleFinish = () => {
     navigate(`/product/search/${keyword}`);

@@ -1,35 +1,56 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Form, Input } from "antd";
-import axios from "axios";
-import React, { useState } from "react";
-import { useCookies } from "react-cookie";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
+import { useCookies } from "react-cookie";
 import Title from "../../../Components/Title/Title";
 import "../../../css/Login/Login.css";
+import axios from "axios";
+import ApiLogin from "../../../Share/ApiURL/ApiLogin";
 
-const Login = () => {
-  sessionStorage.setItem("key", 1);
+const Login = ({ loading, ...props }) => {
+  const userRef = useRef();
+
   const [cookies, setCookie] = useCookies(["user"]);
   const [error, setError] = useState("");
 
-  const onFinish = (values) => {
-    console.log("Received values of form: ", values);
+  useEffect(() => {
+    userRef.current.focus();
+  }, []);
 
-    axios
-      .post(`http://localhost:8080/user/signin`, {
-        email: values.email,
-        password: values.password,
-      })
-      .then((response) => {
-        setCookie("token", response.data, {
+  const onFinish = async (values) => {
+    console.log("Received values of form: ", values);
+    
+    await axios
+      .post(
+        `${ApiLogin.loginApiUrl}`,
+        {
+          username: values.username,
+          password: values.password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((res) => {
+        setCookie("token", res.data.token, {
           maxAge: 7 * 24 * 60 * 60,
         });
         window.location.replace("/");
-        sessionStorage.setItem("key", 1);
       })
       .catch((error) => {
-        console.log(error.response.data);
-        setError(error.response.data);
+        console.log(error.response);
+        if (!error.response) {
+          setError("No server response");
+        } else if (error.response.status === 400) {
+          setError("Missing Username or Password");
+        } else if (error.response.status === 401) {
+          setError("Unauthorized");
+        } else {
+          setError("Login failed");
+        }
       });
   };
 
@@ -48,19 +69,19 @@ const Login = () => {
     >
       <Title title={"Login"} />
       <Form.Item
-        name="email"
+        name="username"
         rules={[
           {
             required: true,
-            message: "Vui lòng nhập email!",
+            message: "Please enter username!",
           },
         ]}
         onChange={() => setError("")}
       >
         <Input
           prefix={<UserOutlined className="site-form-item-icon" />}
-          type="Email"
-          placeholder="Email"
+          placeholder="Username"
+          ref={userRef}
         />
       </Form.Item>
       <Form.Item
@@ -91,6 +112,8 @@ const Login = () => {
             <p style={{ color: "#CF2338" }}>
               Sai tài khoản hoặc mật khẩu vui lòng nhập lại
             </p>
+          ) : error === "Unauthorized" ? (
+            <p style={{ color: "#CF2338" }}>Unauthorized</p>
           ) : (
             <></>
           )}
