@@ -126,7 +126,7 @@ function App() {
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/order/:id" element={<Order />} />
                 <Route
-                  path="/don-hang/:orderid/:userid"
+                  path="/don-hang/:orderid/"
                   element={<OrderDetail />}
                 />
                 {tokenDecryption === undefined ? (
@@ -174,7 +174,7 @@ function App() {
                     />
                     <Route path="/admin/don-hang/" element={<OrderList />} />
                     <Route
-                      path="/admin/don-hang/:orderid/:userid"
+                      path="/admin/don-hang/:orderid/"
                       element={<OrderDetailAdmin />}
                     />
                   </>

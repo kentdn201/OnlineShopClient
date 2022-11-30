@@ -18,10 +18,22 @@ import GetName from "../../HomePage/GetOneProduct/GetName";
 import { Content } from "antd/lib/layout/layout";
 import CurrentHeaderContext from "../../../Share/Contexts/CurrentHeaderContext";
 import { useContext } from "react";
+import UserApiURL from "../../../Share/ApiURL/UserApiURL";
 
 const OrderDetailAdmin = () => {
-  const [user, setUser] = useState();
-  const [order, setOrder] = useState();
+  const [user, setUser] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+  });
+  const [order, setOrder] = useState({
+    orderId: "",
+    productId: "",
+    quantity: 0,
+    price: "",
+    userId: "",
+    orderProductDtos: [],
+  });
   const [isLoading, setIsLoading] = useState(false);
   const { setCurrentHeader } = useContext(CurrentHeaderContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,24 +47,20 @@ const OrderDetailAdmin = () => {
     setIsModalOpen(false);
   };
 
-  const userId = useParams().userid;
   const orderId = useParams().orderid;
 
   useEffect(() => {
     setIsLoading(true);
-    axios.get(`${ApiURL.Api}/user/${userId}`).then((response) => {
-      setIsLoading(false);
-      setUser(response.data);
-    });
-  }, []);
-
-  useEffect(() => {
-    setIsLoading(true);
     axios
-      .get(`${OrderApiURL.orderDetailByUser}${orderId}/${userId}`)
+      .get(`${OrderApiURL.orderDetailByUser}${orderId}/`)
       .then((response) => {
         setIsLoading(false);
         setOrder(response.data);
+        axios
+          .get(`${UserApiURL.getUserApi}/${response.data.userId}`)
+          .then((res) => {
+            setUser(res.data)
+          });
         document.title = `Admin / Đơn Hàng Chi Tiết`;
       });
   }, []);
@@ -74,7 +82,8 @@ const OrderDetailAdmin = () => {
     data = order.orderProductDtos.map((order, index) => ({
       orderId: order.orderId,
       key: `order ${index}`,
-      productId: order.productId,
+      productImage: order.product.imageURL,
+      productName: order.product.name,
       quantity: order.quantity,
       price: order.price,
       userId: order.userId,
@@ -90,7 +99,11 @@ const OrderDetailAdmin = () => {
         dataIndex: "imageURL",
         key: "imageurl",
         render: (_, data) => {
-          return <GetImageURL productId={data.productId} />;
+          return (
+            <div>
+              <img width={100} src={`${data.productImage}`} />
+            </div>
+          );
         },
       },
       {
@@ -98,7 +111,7 @@ const OrderDetailAdmin = () => {
         dataIndex: "name",
         key: "name",
         render: (_, data) => {
-          return <GetName productId={data.productId} />;
+          return <div>{data.productName}</div>;
         },
       },
       {

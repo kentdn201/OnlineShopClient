@@ -36,7 +36,7 @@ const Login = ({ loading, ...props }) => {
       )
       .then((res) => {
         setCookie("token", res.data.token, {
-          maxAge: 7 * 24 * 60 * 60,
+          maxAge: 60 * 60,
         });
         window.location.replace("/");
       })

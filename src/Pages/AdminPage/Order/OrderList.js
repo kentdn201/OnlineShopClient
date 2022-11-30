@@ -64,7 +64,7 @@ const OrderList = () => {
       key: "action",
       render: (data) => (
         <Space size="middle">
-          <Link to={`/admin/don-hang/${data.id}/${data.userId}`}>Xem chi tiết đơn hàng</Link>
+          <Link to={`/admin/don-hang/${data.id}/`}>Xem chi tiết đơn hàng</Link>
         </Space>
       ),
     },

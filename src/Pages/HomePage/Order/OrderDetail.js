@@ -1,45 +1,48 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import ApiURL from "../../../Share/ApiURL/ApiURL";
+import { useParams, useNavigate } from "react-router-dom";
 import OrderApiURL from "../../../Share/ApiURL/OrderApiURL";
 import { Table } from "antd";
-import GetImageURL from "../GetOneProduct/GetImageURL";
-import GetName from "../GetOneProduct/GetName";
 import { useContext } from "react";
 import CurrentUserContext from "../../../Share/Contexts/CurrentUserContext";
 
 const OrderDetail = () => {
-  const [user, setUser] = useState();
+  const navigate = useNavigate();
+  const [user, setUser] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+  });
   const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
-  const [order, setOrder] = useState();
+  const [order, setOrder] = useState({
+    orderId: "",
+    productId: "",
+    quantity: 0,
+    price: "",
+    userId: "",
+    orderProductDtos: []
+  });
   const [isLoading, setIsLoading] = useState(false);
 
-  const userId = useParams().userid;
   const orderId = useParams().orderid;
 
   useEffect(() => {
     setIsLoading(true);
-    axios.get(`${ApiURL.Api}/user/${userId}`).then((response) => {
-      setIsLoading(false);
-      setUser(response.data);
-    });
-  }, []);
-
-  useEffect(() => {
-    setIsLoading(true);
     axios
-      .get(`${OrderApiURL.orderDetailByUser}${orderId}/${userId}`)
+      .get(`${OrderApiURL.orderDetailByUser}${orderId}/`)
       .then((response) => {
         setIsLoading(false);
         setOrder(response.data);
+        if(currentUser.id !== response.data.userId)
+        {
+          navigate("/")
+        }
       });
   }, []);
 
   let columns = [];
   let data = [];
   let total;
-
   const formatter = new Intl.NumberFormat("en-US", {
     currency: "VND",
   });
@@ -49,7 +52,8 @@ const OrderDetail = () => {
     data = order.orderProductDtos.map((order, index) => ({
       orderId: order.orderId,
       key: `order ${index}`,
-      productId: order.productId,
+      productImage: order.product.imageURL,
+      productName: order.product.name,
       quantity: order.quantity,
       price: order.price,
       userId: order.userId,
@@ -65,7 +69,7 @@ const OrderDetail = () => {
         dataIndex: "imageURL",
         key: "imageurl",
         render: (_, data) => {
-          return <GetImageURL productId={data.productId} />;
+          return <div><img width={100} src={`${data.productImage}`}/></div>;
         },
       },
       {
@@ -73,7 +77,7 @@ const OrderDetail = () => {
         dataIndex: "name",
         key: "name",
         render: (_, data) => {
-          return <GetName productId={data.productId} />;
+          return <div>{data.productName}</div>;
         },
       },
       {
@@ -140,7 +144,7 @@ const OrderDetail = () => {
                 >
                   Chi tiết đơn hàng
                 </h2>
-                <h3>Người Nhận: {user.lastName + " " + user.firstName}</h3>
+                <h3>Người Nhận: {currentUser.lastName + " " + currentUser.firstName}</h3>
                 <h3>Số Điện Thoại: {order.phoneNumber}</h3>
                 <h3>Địa Chỉ: {order.address}</h3>
                 <h3>Ghi Chú: {order.note}</h3>
