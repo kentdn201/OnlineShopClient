@@ -11,7 +11,7 @@ const SideBar = () => {
       label: "Quản Lý Người Dùng",
       children: [
         {
-          key: "child-order-1",
+          key: "child-user-1",
           label: <Link to={"/admin/nguoi-dung"}>Danh Sách Người Dùng</Link>,
         },
       ],
@@ -51,6 +51,10 @@ const SideBar = () => {
         {
           key: "child-order-1",
           label: <Link to={"/admin/don-hang"}>Danh Sách Đơn Đặt Hàng</Link>,
+        },
+        {
+          key: "child-order-2",
+          label: <Link to={"/admin/trang-thai-don-hang"}>Danh Sách Trạng Thái Đơn Hàng</Link>,
         },
       ],
     },

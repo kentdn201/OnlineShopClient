@@ -31,6 +31,7 @@ import UserList from "./Pages/AdminPage/User/UserList";
 import ViewUser from "./Pages/AdminPage/User/ViewUser";
 import { notification } from "antd";
 import ApiLogin from "./Share/ApiURL/ApiLogin";
+import OrderStatusList from "./Pages/AdminPage/Order/OrderStatusList";
 
 function App() {
   const cookies = new Cookies();
@@ -177,6 +178,7 @@ function App() {
                       path="/admin/don-hang/:orderid/"
                       element={<OrderDetailAdmin />}
                     />
+                    <Route path="/admin/trang-thai-don-hang/" element={<OrderStatusList />} />
                   </>
                 ) : (
                   <></>

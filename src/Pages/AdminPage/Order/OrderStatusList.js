@@ -1,10 +1,11 @@
-import { Space, Table } from "antd";
-import { Link, useParams } from "react-router-dom";
+import { Space, Table, Layout, Breadcrumb } from "antd";
+import { Link } from "react-router-dom";
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import OrderApiURL from "../../../Share/ApiURL/OrderApiURL";
 import moment from "moment";
 import CurrentHeaderContext from "../../../Share/Contexts/CurrentHeaderContext";
+import { Content } from "antd/lib/layout/layout";
 
 const dateFormat = (date) => {
   var options = { hour: "numeric", minute: "numeric", second: "numeric" };
@@ -12,22 +13,19 @@ const dateFormat = (date) => {
   return dFormat.toLocaleDateString("en-US", options);
 };
 
-const Order = () => {
+const OrderStatusList = () => {
   const [orderList, setOrderList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const { setCurrentHeader } = useContext(CurrentHeaderContext);
 
-  const id = useParams().id;
-
-  document.title = `Danh Sách Đơn Hàng`;
-
   useEffect(() => {
     setIsLoading(true);
-    axios.get(`${OrderApiURL.getAllOrderByUser}${id}`).then((response) => {
+    axios.get(`${OrderApiURL.allOrder}`).then((response) => {
       setIsLoading(false);
       setOrderList(response.data);
+      document.title = `Admin / Danh Sách Đơn Hàng`;
     });
-  }, [id]);
+  }, []);
 
   const columns = [
     {
@@ -42,7 +40,7 @@ const Order = () => {
       title: "Trạng Thái",
       dataIndex: "orderStatus",
       key: "orderStatus",
-      sorter: (a, b) => a.orderStatus.length - b.orderStatus.length,
+      sorter: (a, b) => a.orderStatus.name.length - b.orderStatus.name.length,
       render: (status) => (
         <div>
           {status.name === "Chưa Lấy Hàng" ? (
@@ -66,7 +64,7 @@ const Order = () => {
       key: "action",
       render: (data) => (
         <Space size="middle">
-          <Link to={`/don-hang/${data.id}/`}>Xem chi tiết đơn hàng</Link>
+          <Link to={`/admin/don-hang/${data.id}/`}>Xem chi tiết đơn hàng</Link>
         </Space>
       ),
     },
@@ -74,34 +72,43 @@ const Order = () => {
 
   const data = orderList.map((order, index) => ({
     id: order.id,
+    userId: order.userId,
     createDate: order.createDate,
     orderStatus: order.orderStatus,
     key: `order ${index}`,
   }));
 
   if (performance.getEntriesByType("navigation")[0].type) {
-    setCurrentHeader("Order Detail");
+    setCurrentHeader("Admin");
   }
 
   return (
     <div>
       {data.length > 0 ? (
         <>
-          <h2
-            style={{
-              textAlign: "center",
-              padding: 10,
-            }}
-          >
-            Đơn Hàng
-          </h2>
-          <div
-            style={{
-              margin: "0 64px",
-            }}
-          >
-            <Table columns={columns} loading={isLoading} dataSource={data} />;
-          </div>
+          <Layout>
+            <Content
+              className="site-layout-background"
+              style={{
+                padding: 24,
+                margin: 0,
+                minHeight: 280,
+              }}
+            >
+              <Breadcrumb
+                style={{
+                  margin: "16px 0",
+                }}
+              >
+                <Breadcrumb.Item>
+                  <Link to={"/admin"}>Trang Chủ</Link>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>Admin</Breadcrumb.Item>
+                <Breadcrumb.Item>Danh Sách Sản Phẩm</Breadcrumb.Item>
+              </Breadcrumb>
+              <Table columns={columns} loading={isLoading} dataSource={data} />
+            </Content>
+          </Layout>
         </>
       ) : (
         <></>
@@ -110,4 +117,4 @@ const Order = () => {
   );
 };
 
-export default Order;
+export default OrderStatusList;

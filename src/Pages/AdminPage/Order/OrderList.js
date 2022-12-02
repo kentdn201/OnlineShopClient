@@ -40,17 +40,17 @@ const OrderList = () => {
       title: "Trạng Thái",
       dataIndex: "orderStatus",
       key: "orderStatus",
-      sorter: (a, b) => a.orderStatus.length - b.orderStatus.length,
+      sorter: (a, b) => a.orderStatus.name.length - b.orderStatus.name.length,
       render: (status) => (
         <div>
-          {status === "NotDelivery" ? (
+          {status.name === "Chưa Lấy Hàng" ? (
             <>
-              <div style={{ color: "red" }}>Chưa Giao Hàng</div>
+              <div style={{ color: "red" }}>Chưa Lấy Hàng</div>
             </>
-          ) : status === "Delivery" ? (
-            <><div style={{ color: "orange" }}>Đang Giao Hàng</div></>
-          ) : status === "Done" ? (
-            <><div style={{ color: "green" }}> Đã Hoàn Thành Giao Hàng</div></>
+          ) : status.name === "Đang Lấy Hàng" ? (
+            <><div style={{ color: "orange" }}>Đang Lấy Hàng</div></>
+          ) : status.name === "Đang Chuẩn Bị Giao Hàng" ? (
+            <><div style={{ color: "green" }}> Đang Chuẩn Bị Giao Hàng</div></>
           ) : (
             <>
               <div style={{ color: "red" }}> Đã Hủy</div>

@@ -20,6 +20,7 @@ const OrderDetail = () => {
     quantity: 0,
     price: "",
     userId: "",
+    orderStatus: "",
     orderProductDtos: []
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -151,32 +152,36 @@ const OrderDetail = () => {
                 <h3>Email: {user.email}</h3>
                 <h3>Kiểu Thanh Toán: {order.typePayment}</h3>
                 <h3>
-                  {order.orderStatus === "NotDelivery" ? (
-                    <>
-                      <p style={{ color: "red" }}>
-                        Tình Trạng Đơn Hàng: Chưa Giao Hàng
-                      </p>
-                    </>
-                  ) : order.orderStatus === "Delivery" ? (
-                    <>
-                      <p style={{ color: "orange" }}>
-                        Tình Trạng Đơn Hàng: Đang Giao Hàng
-                      </p>
-                    </>
-                  ) : order.orderStatus === "Done" ? (
-                    <>
-                      <p style={{ color: "green" }}>
-                        Tình Trạng Đơn Hàng: Đã Hoàn Thành Giao Hàng
-                      </p>
-                    </>
-                  ) : (
-                    <>
-                      <p style={{ color: "red" }}>
-                        Tình Trạng Đơn Hàng: Đã Hủy
-                      </p>
-                    </>
-                  )}
-                </h3>
+                      <div>
+                        {order.orderStatus.name === "Chưa Lấy Hàng" ? (
+                          <>
+                            <div style={{ color: "red" }}>
+                              Tình Trạng Đơn Hàng: Chưa Giao Hàng
+                            </div>
+                          </>
+                        ) : order.orderStatus.name === "Đang Lấy Hàng" ? (
+                          <>
+                            <div style={{ color: "orange" }}>
+                              Tình Trạng Đơn Hàng: Đang Lấy Hàng
+                            </div>
+                          </>
+                        ) : order.orderStatus.name ===
+                          "Đang Chuẩn Bị Giao Hàng" ? (
+                          <>
+                            <div style={{ color: "green" }}>
+                              {" "}
+                              Tình Trạng Đơn Hàng: Đang Chuẩn Bị Giao Hàng
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div style={{ color: "red" }}>
+                              Tình Trạng Đơn Hàng: Đã Hủy
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </h3>
 
                 <Table
                   columns={columns}
