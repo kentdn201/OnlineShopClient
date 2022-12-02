@@ -8,11 +8,6 @@ import CurrentUserContext from "../../../Share/Contexts/CurrentUserContext";
 
 const OrderDetail = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-  });
   const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
   const [order, setOrder] = useState({
     orderId: "",
@@ -149,7 +144,7 @@ const OrderDetail = () => {
                 <h3>Số Điện Thoại: {order.phoneNumber}</h3>
                 <h3>Địa Chỉ: {order.address}</h3>
                 <h3>Ghi Chú: {order.note}</h3>
-                <h3>Email: {user.email}</h3>
+                <h3>Email: {currentUser.email}</h3>
                 <h3>Kiểu Thanh Toán: {order.typePayment}</h3>
                 <h3>
                       <div>

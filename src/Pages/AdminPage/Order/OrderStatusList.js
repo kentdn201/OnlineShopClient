@@ -1,4 +1,14 @@
-import { Space, Table, Layout, Breadcrumb } from "antd";
+import {
+  Space,
+  Table,
+  Layout,
+  Breadcrumb,
+  Form,
+  Button,
+  Modal,
+  Input,
+  notification,
+} from "antd";
 import { Link } from "react-router-dom";
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
@@ -6,6 +16,7 @@ import OrderApiURL from "../../../Share/ApiURL/OrderApiURL";
 import moment from "moment";
 import CurrentHeaderContext from "../../../Share/Contexts/CurrentHeaderContext";
 import { Content } from "antd/lib/layout/layout";
+import OrderStatusApiURL from "../../../Share/ApiURL/OrderStatusApiURL";
 
 const dateFormat = (date) => {
   var options = { hour: "numeric", minute: "numeric", second: "numeric" };
@@ -14,73 +25,81 @@ const dateFormat = (date) => {
 };
 
 const OrderStatusList = () => {
-  const [orderList, setOrderList] = useState([]);
+  const [orderStatusList, setOrderStatusList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
   const { setCurrentHeader } = useContext(CurrentHeaderContext);
 
   useEffect(() => {
     setIsLoading(true);
-    axios.get(`${OrderApiURL.allOrder}`).then((response) => {
+    axios.get(`${OrderStatusApiURL.allOrderStatus}`).then((response) => {
       setIsLoading(false);
-      setOrderList(response.data);
-      document.title = `Admin / Danh Sách Đơn Hàng`;
+      setOrderStatusList(response.data);
+      console.log(response.data);
+      document.title = `Admin / Danh Sách Trạng Thái Đơn Hàng`;
     });
   }, []);
 
   const columns = [
     {
-      title: "Ngày Đặt",
-      dataIndex: "createDate",
-      key: "createDate",
-      sorter: (a, b) =>
-        moment(a.createDate).unix() - moment(b.createDate).unix(),
-      render: (date) => <Link>{dateFormat(date)}</Link>,
-    },
-    {
       title: "Trạng Thái",
-      dataIndex: "orderStatus",
-      key: "orderStatus",
-      sorter: (a, b) => a.orderStatus.name.length - b.orderStatus.name.length,
-      render: (status) => (
-        <div>
-          {status.name === "Chưa Lấy Hàng" ? (
-            <>
-              <div style={{ color: "red" }}>Chưa Lấy Hàng</div>
-            </>
-          ) : status.name === "Đang Lấy Hàng" ? (
-            <><div style={{ color: "orange" }}>Đang Lấy Hàng</div></>
-          ) : status.name === "Đang Chuẩn Bị Giao Hàng" ? (
-            <><div style={{ color: "green" }}> Đang Chuẩn Bị Giao Hàng</div></>
-          ) : (
-            <>
-              <div style={{ color: "red" }}> Đã Hủy</div>
-            </>
-          )}
-        </div>
-      ),
+      dataIndex: "name",
+      key: "name",
+      sorter: (a, b) => a.name.length - b.name.length,
+      render: (name) => <div>{name}</div>,
     },
     {
       title: "",
       key: "action",
       render: (data) => (
         <Space size="middle">
-          <Link to={`/admin/don-hang/${data.id}/`}>Xem chi tiết đơn hàng</Link>
+          <Link to={`/admin/don-hang/${data.id}/`}>Đổi tên trạng thái</Link>
         </Space>
       ),
     },
   ];
 
-  const data = orderList.map((order, index) => ({
-    id: order.id,
-    userId: order.userId,
-    createDate: order.createDate,
-    orderStatus: order.orderStatus,
+  const data = orderStatusList.map((orderStatus, index) => ({
+    id: orderStatus.id,
+    name: orderStatus.name,
     key: `order ${index}`,
   }));
 
   if (performance.getEntriesByType("navigation")[0].type) {
     setCurrentHeader("Admin");
   }
+
+  const openNotification = (type) => {
+    if (type === "success") {
+      notification[type]({
+        message: "Add Successfully",
+      });
+    } else if (type === "fail") {
+      notification[type]({
+        message: "Add Fail",
+      });
+    }
+  };
+
+  const onFinish = (values) => {
+    axios
+      .post(`${OrderStatusApiURL.addOrderStatus}`, values)
+      .then((res) => {
+        openNotification("success")
+      })
+      .catch((err) => {
+        openNotification("fail")
+      });
+  };
 
   return (
     <div>
@@ -104,8 +123,55 @@ const OrderStatusList = () => {
                   <Link to={"/admin"}>Trang Chủ</Link>
                 </Breadcrumb.Item>
                 <Breadcrumb.Item>Admin</Breadcrumb.Item>
-                <Breadcrumb.Item>Danh Sách Sản Phẩm</Breadcrumb.Item>
+                <Breadcrumb.Item>Danh Sách Trạng Thái Đơn Hàng</Breadcrumb.Item>
               </Breadcrumb>
+              <Button
+                type="primary"
+                onClick={showModal}
+                style={{
+                  marginBottom: 10,
+                }}
+              >
+                Thêm Trạng Thái
+              </Button>
+              <Modal
+                title="Basic Modal"
+                open={isModalOpen}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                footer={null}
+              >
+                <Form onFinish={onFinish}>
+                  <Form.Item
+                    name="name"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input order status!",
+                      },
+                    ]}
+                  >
+                    <Input placeholder="Enter order status" />
+                  </Form.Item>
+
+                  <Form.Item
+                    wrapperCol={{
+                      offset: 8,
+                      span: 16,
+                    }}
+                  >
+                    <div
+                      style={{
+                        textAlign: "right",
+                      }}
+                    >
+                      <Button type="primary" htmlType="submit">
+                        Ok
+                      </Button>
+                    </div>
+                  </Form.Item>
+                </Form>
+              </Modal>
               <Table columns={columns} loading={isLoading} dataSource={data} />
             </Content>
           </Layout>
